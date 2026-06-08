@@ -1,0 +1,16 @@
+{
+  "name": "eni-app-sdk-demo",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.0.0",
+  "scripts": {
+    "validate": "bun scripts/validate-demos.mjs",
+    "build": "pnpm -r --filter './apps/*' build",
+    "build:react": "pnpm --filter widgets-react-demo build",
+    "build:vue": "pnpm --filter widgets-vue-demo build"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}
+
