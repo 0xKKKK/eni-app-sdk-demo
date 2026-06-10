@@ -2,18 +2,25 @@
 
 [中文文档](./README_zh-CN.md)
 
-This repository contains public demo applications for the published ENI App SDK packages. The demos are intentionally small Vite apps that install `@eni-chain/*` packages from npm instead of linking to a private SDK workspace.
+This repository contains public demos for integrating ENI bridge, gas exchange, and widget features. The demos are intentionally small and install published packages from npm instead of linking to a private SDK workspace.
 
 > **Beta notice:** The ENI App SDK is under active development and should currently be treated as beta software. APIs and behavior may continue to evolve, so test your integration thoroughly in your own environment before using it in production.
 
-## Demo Apps
+## Integration Options
 
-- [React widgets demo](./apps/widgets-react-demo/README.md): shows how to integrate the React widget package, configure the full widget shell, and render standalone widgets such as Bridge and Swap.
-- [Vue widgets demo](./apps/widgets-vue-demo/README.md): shows the same widget integration patterns for Vue 3.
+Choose one of the following integration paths based on how much UI and SDK abstraction your application needs.
+
+| Option | Use when | Demo |
+| --- | --- | --- |
+| API | Your app or backend already has its own wallet, transaction, and request layer, and you only need raw bridge API calls plus gas exchange calldata helpers. | [API demo](./apps/api-demo/README.md) |
+| SDK | Your app has its own UI, but you want the SDK to wrap bridge quotes, route selection, gas exchange plans, chain config, token config, and wallet execution helpers. | [SDK demo](./apps/sdk-demo/README.md) |
+| Widgets | You want a ready-made UI for React or Vue, including full widget shell and standalone Bridge, Gas, Swap, and Tools modules. | [React widgets demo](./apps/widgets-react-demo/README.md), [Vue widgets demo](./apps/widgets-vue-demo/README.md) |
 
 ## What the Demos Cover
 
+- Raw bridge API quote and history calls, plus gas exchange transaction construction.
 - Initializing `EniSDK` with an EIP-1193 wallet adapter.
+- Calling the SDK directly to resolve bridge routes, request quotes, execute cross-chain transactions, and prepare or execute gas exchange plans.
 - Rendering the full ENI widget experience with `EniProvider` and `EniWidgets`.
 - Enabling or disabling Bridge, Gas, Swap, and Tools modules.
 - Customizing language, theme, toolbar visibility, default module, token presets, slippage, and quick links.
@@ -33,7 +40,23 @@ Run validation:
 bun run validate
 ```
 
-Run a specific demo during local development:
+Run API demo scripts:
+
+```bash
+cd apps/api-demo
+bun run bridge
+bun run gas
+```
+
+Run SDK demo scripts:
+
+```bash
+cd apps/sdk-demo
+bun run bridge
+bun run gas
+```
+
+Run widget demo apps during local development:
 
 ```bash
 cd apps/widgets-react-demo

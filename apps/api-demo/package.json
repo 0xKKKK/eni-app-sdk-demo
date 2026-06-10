@@ -1,0 +1,15 @@
+{
+  "name": "api-demo",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "bridge": "bun run src/bridge-demo.ts",
+    "gas": "bun run src/gas-exchange-demo.ts"
+  },
+  "dependencies": {
+    "viem": "^2.52.2"
+  },
+  "devDependencies": {
+    "typescript": "^5.7.0"
+  }
+}
