@@ -4,6 +4,10 @@
 
 This app demonstrates how to use `@eni-chain/app-sdk-widgets-vue` in a Vue 3 application. It includes a live widget preview, configurable module settings, and generated source code for the selected configuration.
 
+## Live Demo
+
+Open the hosted Vue demo: https://eni-widgets-vue-demo.vercel.app/
+
 ## Packages
 
 Install the SDK, Vue bindings, and Vue widget package in your own Vue project:

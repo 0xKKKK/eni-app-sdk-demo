@@ -4,6 +4,10 @@
 
 这个应用演示如何在 Vue 3 项目中使用 `@eni-chain/app-sdk-widgets-vue`。示例包含实时预览、可配置模块，以及根据当前配置生成的源码片段。
 
+## 在线示例
+
+打开已部署的 Vue 示例：https://eni-widgets-vue-demo.vercel.app/
+
 ## 安装包
 
 在自己的 Vue 项目中安装 SDK、Vue 绑定和 Vue widgets 包：

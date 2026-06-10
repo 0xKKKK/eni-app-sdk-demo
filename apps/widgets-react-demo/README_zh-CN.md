@@ -4,6 +4,10 @@
 
 这个应用演示如何在 React 项目中使用 `@eni-chain/app-sdk-widgets-react`。示例包含实时预览、可配置模块，以及根据当前配置生成的源码片段。
 
+## 在线示例
+
+打开已部署的 React 示例：https://eni-widgets-react-demo.vercel.app/
+
 ## 安装包
 
 在自己的 React 项目中安装 SDK、React 绑定和 React widgets 包：

@@ -4,6 +4,10 @@
 
 This app demonstrates how to use `@eni-chain/app-sdk-widgets-react` in a React application. It includes a live widget preview, configurable module settings, and generated source code for the selected configuration.
 
+## Live Demo
+
+Open the hosted React demo: https://eni-widgets-react-demo.vercel.app/
+
 ## Packages
 
 Install the SDK, React bindings, and React widget package in your own React project:
