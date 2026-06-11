@@ -14,18 +14,15 @@ async function main() {
   const tokenSymbol = "USDT";
   const amount = "1";
   const userAddress = "0x1234567890abcdef1234567890abcdef12345678";
-  const targetRecipient = userAddress;
 
   // 1. Request a quote. The bridge API returns the recommended provider,
   // available providers, fees, and executable transaction steps.
-  // targetRecipient is optional. If omitted, the API uses userAddress as the recipient.
   const quoteResp = await bridgeAPI.quote({
     fromChain,
     toChain,
     tokenSymbol,
     amount,
     userAddress,
-    targetRecipient,
   });
 
   // 2. Show the recommended route and all currently available routes.
@@ -43,13 +40,18 @@ async function main() {
       reasons: provider.reasons.map((reason) => reason.code),
       amountRange: provider.amountRange,
       liquidity: provider.liquidity,
+      hasQuote: provider.hasQuote,
+      error: provider.error,
     })),
   });
 
   // 3. Read the transaction steps for the selected provider.
-  // The top-level quote result contains the steps selected by the API.
   const selectedProvider = recommendedProvider || availableProviders[0]?.providerId || null;
-  const selectedSteps = getQuoteSteps(quoteResp);
+  const selectedSteps = selectedProvider ? getQuoteSteps(quoteResp, selectedProvider) : [];
+
+  if (selectedSteps.length === 0) {
+    throw new Error("Selected bridge provider did not return executable transaction steps");
+  }
 
   printJson("selected route steps", {
     selectedProvider,
@@ -97,7 +99,7 @@ function summarizeStep(step: QuoteStep, index: number) {
     action: step.action,
     to: step.tx.to,
     value: step.tx.value,
-    chainId: step.tx.chainId,
+    chainId: step.tx.chainId === undefined ? undefined : String(step.tx.chainId),
     dataPreview: `${step.tx.data.slice(0, 18)}...${step.tx.data.slice(-10)}`,
   };
 }

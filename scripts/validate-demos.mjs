@@ -15,12 +15,19 @@ const requiredApps = [
   },
 ];
 
+const appSdkVersion = "0.1.2";
+
 function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));
 }
 
 function readText(path) {
   return readFileSync(path, "utf8");
+}
+
+const sdkDemoPackageJson = readJson("apps/sdk-demo/package.json");
+if (sdkDemoPackageJson.dependencies?.["@eni-chain/app-sdk"] !== appSdkVersion) {
+  throw new Error("apps/sdk-demo must use @eni-chain/app-sdk from npm");
 }
 
 for (const app of requiredApps) {
@@ -31,7 +38,7 @@ for (const app of requiredApps) {
     throw new Error(`${app.path} package name must be ${app.packageName}`);
   }
 
-  if (packageJson.dependencies?.["@eni-chain/app-sdk"] !== "0.1.1") {
+  if (packageJson.dependencies?.["@eni-chain/app-sdk"] !== appSdkVersion) {
     throw new Error(`${app.path} must use @eni-chain/app-sdk from npm`);
   }
 

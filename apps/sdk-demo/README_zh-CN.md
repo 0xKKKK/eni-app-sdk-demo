@@ -36,34 +36,102 @@ bun run gas
 
 跨链 demo 默认使用 BSC `56` 到 ENI mainnet `173`，token 为 `USDT`，数量为 `1`。
 
-```ts
-const eni = createEniClient();
+### 1. Quote
 
-const quote = await eni.bridge.quote({
-  sourceChainId: "56",
-  destChainId: "173",
-  tokenKey: "USDT",
-  amount: "1",
+```ts
+const quoteResp = await eni.bridge.quote({
+  sourceChainId: fromChain,
+  destChainId: toChain,
+  tokenKey: tokenSymbol,
+  amount,
   userAddress,
-  // targetRecipient 可选。收款地址和 userAddress 相同时可以不传。
 });
 ```
 
-quote 返回内容中常用字段：
+quote response 返回内容中常用字段：
 
 - `selectedProvider`：推荐跨链 provider。
 - `selection.providerOrder`：按优先级排列的可用 provider。
 - `steps`：当前选中路线需要用户执行的钱包交易步骤。
+- `providerQuotes`：各 provider 的报价状态和结构化原始报价。
+- `raw`：bridge API 原始响应，排查 provider 选择和 fallback 时建议打印。
 
-在浏览器应用中，可以先展示推荐路线和所有可用路线。用户确认路线后，再用已连接的钱包执行 steps：
+### 2. Execute
+
+可以直接执行推荐路线：
 
 ```ts
-import { executeBridgeQuote } from "@eni-chain/app-sdk";
-
-await executeBridgeQuote({ quote, wallet });
+await executeBridgeQuote({ quote: quoteResp, wallet });
 ```
 
-`targetRecipient` 是可选参数。不传时，bridge API 默认收款地址等于 `userAddress`。只有目标链收款地址和当前钱包地址不同时才需要传。
+如果业务 UI 允许用户手动选择 provider，可以展示 `allProviderQuotes`，再用用户选择的 provider 生成 `executableQuote`。不要自己解析 `providerQuotes[provider].quote.result.steps`。
+
+```ts
+const allProviderQuotes = quoteResp.selection.providerOrder
+  .map((providerId) => quoteResp.providerQuotes[providerId])
+  .filter((providerQuote) => providerQuote !== undefined);
+
+const userSelectedProvider = allProviderQuotes[0]?.providerId;
+if (!userSelectedProvider) {
+  throw new Error("No bridge provider quotes returned");
+}
+
+const executableQuote = selectBridgeProviderQuote(quoteResp, userSelectedProvider);
+
+console.log(
+  "Bridge steps:",
+  executableQuote.steps.map((step) => ({
+    id: step.id,
+    kind: step.kind,
+    chainId: step.chainId,
+    label: step.label,
+    to: step.request?.to,
+    data: step.request?.data,
+    value: step.request?.value.toString(),
+  })),
+);
+```
+
+最终执行时把 `executableQuote` 传给 `executeBridgeQuote({ quote: executableQuote, wallet })`。
+
+排查 provider 选择、报价失败或 fallback 时，建议打印：
+
+```ts
+console.log("selected provider", quoteResp.selectedProvider);
+console.log("provider quotes", quoteResp.providerQuotes);
+console.log("raw bridge api response", quoteResp.raw);
+```
+
+### 3. Records
+
+跨链记录可以通过 SDK 的 records helper 查询并展示：
+
+```ts
+const recordsResp = await eni.bridge.records({
+  user: userAddress,
+  page: 1,
+  limit: 10,
+  assetSymbol: tokenSymbol,
+});
+
+if (recordsResp.code !== 0 || !recordsResp.data) {
+  console.warn("Bridge records query failed:", recordsResp.msg);
+} else {
+  console.log(
+    "Recent bridge records:",
+    recordsResp.data.list.map((record) => ({
+      protocol: record.protocol,
+      direction: record.direction,
+      status: record.status,
+      route: `${record.sourceChainId || "?"} -> ${record.targetChainId || "?"}`,
+      amount: `${record.sourceAmount || "0"} ${record.assetSymbol}`,
+      sourceTxHash: record.sourceTxHash,
+      targetTxHash: record.targetTxHash,
+      time: record.time,
+    })),
+  );
+}
+```
 
 ## Gas Exchange Demo
 

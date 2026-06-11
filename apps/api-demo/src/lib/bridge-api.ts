@@ -1,6 +1,11 @@
-type BridgeProviderId = "orbiter" | "hyperlane";
+export type ChainId = string;
+export type Address = `0x${string}`;
+export type Hex = `0x${string}`;
+export type DecimalAmount = string;
 
-type ProviderVisibility = {
+export type BridgeProviderId = "orbiter" | "hyperlane";
+
+export type ProviderVisibility = {
   providerId: BridgeProviderId;
   visible: boolean;
   reasons: Array<{ code: string; message?: string }>;
@@ -17,9 +22,9 @@ type ProviderVisibility = {
   };
 };
 
-type ChainIdInput = string | number;
+type ChainIdInput = ChainId | number;
 
-type RouteInput = {
+export type RouteInput = {
   fromChain?: ChainIdInput;
   toChain?: ChainIdInput;
   tokenSymbol?: string;
@@ -28,45 +33,106 @@ type RouteInput = {
   tokenKey?: string;
 };
 
-type ResolveRequest = RouteInput & {
-  amount: string;
+export type BridgeResolveRequest = RouteInput & {
+  amount: DecimalAmount;
+  // Resolve-only hint for route explanation. The quote helper intentionally omits provider override params.
   currentProvider?: BridgeProviderId;
 };
 
-type QuoteSelection = {
-  recommendedProvider: BridgeProviderId | null;
-  visibleProviders: ProviderVisibility[];
+export type BridgeRulesContext = {
+  amount: string;
+  orbiterCheckAmount: string;
+  isEniToBscUsdt: boolean;
+  isBscToEni: boolean;
+  tokenKey: string;
 };
 
-type QuoteRequest = ResolveRequest & {
-  userAddress: string;
-  targetRecipient?: string;
+export type ResolveBridgeResponse = {
+  routeGroupId: string | null;
+  sourceChainId: ChainId;
+  destChainId: ChainId;
+  tokenKey: string;
+  recommendedProvider: BridgeProviderId | null;
+  priorityRank: Partial<Record<BridgeProviderId, number>>;
+  providerOrder?: BridgeProviderId[];
+  visibleProviders: ProviderVisibility[];
+  hiddenProviders?: ProviderVisibility[];
+  reasonCodes?: string[];
+  rulesContext: BridgeRulesContext;
+  tokensByProvider?: Record<
+    string,
+    {
+      fromToken: string;
+      toToken: string;
+    }
+  >;
+};
+
+export type BridgeProviderQuoteResult = {
+  fees?: Record<string, unknown>;
+  steps?: BridgeApiTransactionStep[];
+  details?: Record<string, unknown>;
+  [key: string]: unknown;
+};
+
+export type ProviderQuotePayload = {
+  status?: string;
+  message?: string;
+  result?: BridgeProviderQuoteResult | null;
+  [key: string]: unknown;
+};
+
+export type ProviderQuoteState = {
+  providerId: BridgeProviderId;
+  quote: ProviderQuotePayload | null;
+  hasQuote: boolean;
+  error?: string;
+  validationSkipped?: boolean;
+  maintenance?: unknown;
+};
+
+export type BridgeQuoteRequest = RouteInput & {
+  amount: DecimalAmount;
+  userAddress: Address;
+  targetRecipient?: Address;
   slippage?: number | string;
 };
 
-export type QuoteStep = {
+export type BridgeApiTransactionStep = {
   action: string;
   tx: {
     to: string;
     data: string;
     value: string;
-    chainId?: number;
+    chainId?: ChainId | number | bigint;
   };
 };
 
-export type QuoteResponse = {
+export type QuoteStep = BridgeApiTransactionStep;
+
+export type QuoteBridgeApiResponse = {
   status: string;
   message: string;
   result: {
-    fees?: Record<string, string | number | undefined>;
+    fees: Record<string, unknown>;
     steps: QuoteStep[];
-    details?: Record<string, unknown>;
+    details: Record<string, unknown>;
   } | null;
   ext?: {
-    selection?: QuoteSelection;
-    providerQuotes?: Record<string, unknown>;
-    rulesContext?: Record<string, unknown>;
+    selection?: ResolveBridgeResponse;
+    providerQuotes?: Record<string, ProviderQuoteState | undefined>;
+    rulesContext?: BridgeRulesContext;
   };
+};
+
+export type QuoteResponse = QuoteBridgeApiResponse;
+
+export type AvailableProvider = ProviderVisibility & {
+  quote: ProviderQuotePayload | null;
+  hasQuote: boolean;
+  error?: string;
+  validationSkipped?: boolean;
+  maintenance?: unknown;
 };
 
 export type BridgeRecord = {
@@ -83,8 +149,79 @@ export type BridgeRecord = {
   time: string | null;
 };
 
-type BridgeRecordsRequest = {
-  user: string;
+export type BridgeChainDirectory = {
+  chainId: ChainId;
+  chainName?: string;
+  name?: string;
+  vm?: string;
+  rpc?: string[];
+  explorers?: Array<{
+    name?: string;
+    url?: string;
+  }>;
+  nativeCurrency?: {
+    name?: string;
+    symbol: string;
+    decimals: number;
+    coinKey?: string;
+    address?: string;
+  };
+  tokens?: BridgeChainToken[];
+  logo?: string;
+  contract?: Record<string, string>;
+};
+
+export type BridgeChainToken = {
+  tokenKey: string;
+  address: string;
+  decimals: number;
+  symbol: string;
+  name?: string;
+  chainId: ChainId;
+  logoURI?: string;
+  originalTokenAddress?: string;
+  originalTokenDecimals?: number;
+  noWrap?: boolean;
+  providerTokenMap?: Record<string, BridgeProviderToken>;
+};
+
+export type BridgeProviderToken = {
+  address: string;
+  decimals: number;
+  symbol: string;
+  name?: string;
+  chainId: ChainId;
+  logoURI?: string;
+  originalTokenAddress?: string;
+  originalTokenDecimals?: number;
+  noWrap?: boolean;
+};
+
+export type BridgeRouter = {
+  srcChain: ChainId;
+  tgtChain: ChainId;
+  srcToken: string;
+  tgtToken: string;
+  state: string;
+  minAmt: string;
+  maxAmt: string | null;
+  maxAmtUnlimited?: boolean;
+  midTokenSymbol: string;
+  providerId: BridgeProviderId;
+  tokenKey: string;
+  routeGroupId: string;
+  providerTokenMap?: Record<
+    string,
+    {
+      fromToken: string;
+      toToken: string;
+    }
+  >;
+  [key: string]: unknown;
+};
+
+export type BridgeRecordsRequest = {
+  user: Address;
   page?: number;
   limit?: number;
   assetSymbol?: string;
@@ -98,24 +235,40 @@ export type BridgeRecordsPayload = {
   hasMore: boolean;
 };
 
-type BridgeRecordsResponse = {
+export type BridgeRecordsResponse = {
   code: number;
   msg: string;
   data: BridgeRecordsPayload | null;
 };
 
-type ApiEnvelope<T> = {
+export type BridgeApiEnvelope<T> = {
+  status?: string;
+  message?: string;
   result: T;
 };
 
-type BridgeApiClientOptions = {
+export type BridgeRoutersParams = Partial<RouteInput>;
+
+export type BridgeApiClientOptions = {
   baseUrl?: string;
   fetchImpl?: FetchLike;
+};
+
+export type BridgeApiClient = {
+  chains: () => Promise<BridgeChainDirectory[]>;
+  routers: (params?: BridgeRoutersParams) => Promise<BridgeRouter[]>;
+  resolve: (body: BridgeResolveRequest) => Promise<ResolveBridgeResponse | null>;
+  quote: (body: BridgeQuoteRequest) => Promise<QuoteResponse>;
+  records: (params: BridgeRecordsRequest) => Promise<BridgeRecordsPayload>;
 };
 
 const DEFAULT_BRIDGE_API_BASE_URL = "https://bridge-api.eniac.network";
 
 type FetchLike = (input: string | URL | Request, init?: RequestInit) => Promise<Response>;
+
+function isBridgeProviderId(value: string): value is BridgeProviderId {
+  return value === "orbiter" || value === "hyperlane";
+}
 
 function getRuntimeEnv(name: string) {
   const runtime = globalThis as unknown as {
@@ -172,14 +325,14 @@ async function requestJson<T>(
   return (await response.json()) as T;
 }
 
-export function createBridgeApiClient(options: BridgeApiClientOptions = {}) {
+export function createBridgeApiClient(options: BridgeApiClientOptions = {}): BridgeApiClient {
   const baseUrl =
     options.baseUrl || getRuntimeEnv("BRIDGE_API_BASE_URL") || DEFAULT_BRIDGE_API_BASE_URL;
   const fetchImpl = options.fetchImpl || fetch;
 
   return {
     chains: async () => {
-      const data = await requestJson<ApiEnvelope<unknown[]>>(
+      const data = await requestJson<BridgeApiEnvelope<BridgeChainDirectory[]>>(
         baseUrl,
         fetchImpl,
         "/v1/bridge/chains",
@@ -187,7 +340,7 @@ export function createBridgeApiClient(options: BridgeApiClientOptions = {}) {
       return data.result || [];
     },
 
-    routers: async (params: Partial<RouteInput> = {}) => {
+    routers: async (params: BridgeRoutersParams = {}) => {
       const search = new URLSearchParams();
       const sourceChainId = params.sourceChainId ?? params.fromChain;
       const destChainId = params.destChainId ?? params.toChain;
@@ -197,7 +350,7 @@ export function createBridgeApiClient(options: BridgeApiClientOptions = {}) {
       if (tokenKey) search.set("tokenKey", tokenKey);
 
       const suffix = search.toString() ? `?${search.toString()}` : "";
-      const data = await requestJson<ApiEnvelope<unknown[]>>(
+      const data = await requestJson<BridgeApiEnvelope<BridgeRouter[]>>(
         baseUrl,
         fetchImpl,
         `/v1/bridge/routers${suffix}`,
@@ -205,9 +358,9 @@ export function createBridgeApiClient(options: BridgeApiClientOptions = {}) {
       return data.result || [];
     },
 
-    resolve: async (body: ResolveRequest) => {
+    resolve: async (body: BridgeResolveRequest) => {
       const route = normalizeRouteInput(body);
-      const data = await requestJson<ApiEnvelope<unknown>>(
+      const data = await requestJson<BridgeApiEnvelope<ResolveBridgeResponse | null>>(
         baseUrl,
         fetchImpl,
         "/v1/bridge/resolve",
@@ -223,7 +376,7 @@ export function createBridgeApiClient(options: BridgeApiClientOptions = {}) {
       return data.result;
     },
 
-    quote: async (body: QuoteRequest) => {
+    quote: async (body: BridgeQuoteRequest) => {
       const route = normalizeRouteInput(body);
       return requestJson<QuoteResponse>(baseUrl, fetchImpl, "/v1/bridge/quote", {
         method: "POST",
@@ -232,7 +385,6 @@ export function createBridgeApiClient(options: BridgeApiClientOptions = {}) {
           amount: body.amount,
           userAddress: body.userAddress,
           targetRecipient: body.targetRecipient,
-          currentProvider: body.currentProvider,
           slippage: body.slippage,
         }),
       });
@@ -264,13 +416,60 @@ export function createBridgeApiClient(options: BridgeApiClientOptions = {}) {
 }
 
 export function getRecommendedProvider(quote: QuoteResponse) {
-  return quote.ext?.selection?.recommendedProvider ?? null;
+  const recommendedProvider = quote.ext?.selection?.recommendedProvider;
+  return recommendedProvider ?? getAvailableProviders(quote)[0]?.providerId ?? null;
 }
 
-export function getAvailableProviders(quote: QuoteResponse) {
-  return quote.ext?.selection?.visibleProviders ?? [];
+export function getAvailableProviders(quote: QuoteResponse): AvailableProvider[] {
+  const selection = quote.ext?.selection;
+  const visibleProviders = selection?.visibleProviders ?? [];
+  const providerQuotes = quote.ext?.providerQuotes ?? {};
+  const orderedProviderIds = [
+    ...(selection?.providerOrder ?? []),
+    ...visibleProviders.map((provider) => provider.providerId),
+    ...Object.values(providerQuotes)
+      .map((providerQuote) => providerQuote?.providerId)
+      .filter((providerId): providerId is BridgeProviderId => Boolean(providerId)),
+    ...Object.keys(providerQuotes).filter(isBridgeProviderId),
+  ].filter((providerId, index, allProviderIds) => allProviderIds.indexOf(providerId) === index);
+
+  return orderedProviderIds
+    .map((providerId): AvailableProvider | null => {
+      const visibility = visibleProviders.find((provider) => provider.providerId === providerId);
+      const providerQuote = providerQuotes[providerId];
+      if (!visibility && !providerQuote?.hasQuote) {
+        return null;
+      }
+
+      return {
+        providerId,
+        visible: visibility?.visible ?? true,
+        reasons: visibility?.reasons ?? [],
+        amountRange: visibility?.amountRange,
+        liquidity: visibility?.liquidity,
+        quote: providerQuote?.quote ?? null,
+        hasQuote: providerQuote?.hasQuote ?? Boolean(providerQuote?.quote?.result?.steps?.length),
+        error: providerQuote?.error,
+        validationSkipped: providerQuote?.validationSkipped,
+        maintenance: providerQuote?.maintenance,
+      };
+    })
+    .filter((provider): provider is AvailableProvider => provider !== null);
 }
 
-export function getQuoteSteps(quote: QuoteResponse) {
-  return quote.result?.steps ?? [];
+export function getProviderQuote(quote: QuoteResponse, providerId: BridgeProviderId) {
+  return quote.ext?.providerQuotes?.[providerId] ?? null;
+}
+
+export function getQuoteSteps(quote: QuoteResponse, providerId?: BridgeProviderId) {
+  if (!providerId) {
+    return quote.result?.steps ?? [];
+  }
+
+  const providerSteps = getProviderQuote(quote, providerId)?.quote?.result?.steps;
+  if (providerSteps && providerSteps.length > 0) {
+    return providerSteps;
+  }
+
+  return providerId === getRecommendedProvider(quote) ? (quote.result?.steps ?? []) : [];
 }

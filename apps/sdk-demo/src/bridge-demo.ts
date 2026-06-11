@@ -1,4 +1,4 @@
-import { createEniClient } from "@eni-chain/app-sdk";
+import { createEniClient, selectBridgeProviderQuote } from "@eni-chain/app-sdk";
 import type { Address } from "@eni-chain/app-sdk";
 
 const eni = createEniClient();
@@ -9,45 +9,54 @@ const tokenSymbol = "USDT";
 const amount = "1";
 const userAddress = "0x1234567890abcdef1234567890abcdef12345678" as Address;
 
-const quote = await eni.bridge.quote({
+/**
+ * 1. Quote
+ *
+ * Request a bridge quote.
+ */
+const quoteResp = await eni.bridge.quote({
   sourceChainId: fromChain,
   destChainId: toChain,
   tokenKey: tokenSymbol,
   amount,
   userAddress,
-  // targetRecipient is optional. Omit it when the recipient is the same as userAddress.
 });
 
-// Show the recommended route first, then show all available routes for user selection.
-console.log("Recommended provider:", quote.selectedProvider);
-console.log("Available providers:", quote.selection.providerOrder);
+console.log("Recommended provider:", quoteResp.selectedProvider);
+console.log("Available providers:", quoteResp.selection.providerOrder);
 
-type ProviderQuoteWithSteps = {
-  result?: {
-    steps?: unknown[];
-  };
-};
+const recommendedProviderQuote = quoteResp.providerQuotes[quoteResp.selectedProvider]?.quote;
+const allProviderQuotes = quoteResp.selection.providerOrder
+  .map((providerId) => quoteResp.providerQuotes[providerId])
+  .filter((providerQuote) => providerQuote !== undefined);
 
-const recommendedProviderQuote = quote.providerQuotes[quote.selectedProvider]?.quote;
-const allProviderQuotes = quote.providerQuotes;
+/**
+ * 2. Execute
+ *
+ * You can use the recommended route directly with quoteResp.selectedProvider /
+ * recommendedProviderQuote, or render allProviderQuotes in your UI and let the
+ * user choose one provider.
+ *
+ * selectBridgeProviderQuote turns the selected provider quote into an executable
+ * quote. In a browser app, pass executableQuote to executeBridgeQuote and execute
+ * its normalized steps with the connected wallet.
+ */
+const userSelectedProvider = allProviderQuotes[0]?.providerId;
+if (!userSelectedProvider) {
+  throw new Error("No bridge provider quotes returned");
+}
 
-// quote.steps is the normalized SDK steps for the recommended route.
-// If your UI lets the user choose a provider, you can also read that provider's raw quote steps.
-const userSelectedProvider = quote.selection.providerOrder[0];
-const userSelectedProviderQuote = userSelectedProvider
-  ? (quote.providerQuotes[userSelectedProvider]?.quote as ProviderQuoteWithSteps | null | undefined)
-  : undefined;
-const userSelectedProviderSteps = userSelectedProviderQuote?.result?.steps;
+const executableQuote = selectBridgeProviderQuote(quoteResp, userSelectedProvider);
 
 console.log("Recommended provider quote:", recommendedProviderQuote);
 console.log("All provider quotes:", allProviderQuotes);
-console.log("User selected provider steps:", userSelectedProviderSteps);
+console.log("Raw bridge API response:", quoteResp.raw);
+console.log("User selected provider:", userSelectedProvider);
+console.log("Executable provider:", executableQuote.selectedProvider);
 
-// After the user selects a route, execute every returned step with the connected wallet.
-// In a browser app, call executeBridgeQuote({ quote, wallet }) after user confirmation.
 console.log(
   "Bridge steps:",
-  quote.steps.map((step) => ({
+  executableQuote.steps.map((step) => ({
     id: step.id,
     kind: step.kind,
     chainId: step.chainId,
@@ -57,3 +66,34 @@ console.log(
     value: step.request?.value.toString(),
   })),
 );
+
+/**
+ * 3. Records
+ *
+ * Query bridge records after execution or on page load to show recent bridge
+ * history for the current user.
+ */
+const recordsResp = await eni.bridge.records({
+  user: userAddress,
+  page: 1,
+  limit: 10,
+  assetSymbol: tokenSymbol,
+});
+
+if (recordsResp.code !== 0 || !recordsResp.data) {
+  console.warn("Bridge records query failed:", recordsResp.msg);
+} else {
+  console.log(
+    "Recent bridge records:",
+    recordsResp.data.list.map((record) => ({
+      protocol: record.protocol,
+      direction: record.direction,
+      status: record.status,
+      route: `${record.sourceChainId || "?"} -> ${record.targetChainId || "?"}`,
+      amount: `${record.sourceAmount || "0"} ${record.assetSymbol}`,
+      sourceTxHash: record.sourceTxHash,
+      targetTxHash: record.targetTxHash,
+      time: record.time,
+    })),
+  );
+}

@@ -36,16 +36,15 @@ Source: [`src/bridge-demo.ts`](./src/bridge-demo.ts)
 
 The bridge demo uses BSC `56` to ENI mainnet `173`, token `USDT`, and amount `1`.
 
-```ts
-const eni = createEniClient();
+### 1. Quote
 
-const quote = await eni.bridge.quote({
-  sourceChainId: "56",
-  destChainId: "173",
-  tokenKey: "USDT",
-  amount: "1",
+```ts
+const quoteResp = await eni.bridge.quote({
+  sourceChainId: fromChain,
+  destChainId: toChain,
+  tokenKey: tokenSymbol,
+  amount,
   userAddress,
-  // targetRecipient is optional. Omit it when the recipient is userAddress.
 });
 ```
 
@@ -54,16 +53,85 @@ The quote response includes:
 - `selectedProvider`: recommended bridge provider.
 - `selection.providerOrder`: available providers in priority order.
 - `steps`: wallet transaction steps for the selected route.
+- `providerQuotes`: per-provider quote state and structured raw provider quote payloads.
+- `raw`: raw Bridge API response, useful when debugging provider selection or fallback.
 
-In a browser app, show the recommended route and available routes to the user first. After the user confirms a route, execute the returned steps with the connected wallet:
+### 2. Execute
+
+To execute the recommended route directly:
 
 ```ts
-import { executeBridgeQuote } from "@eni-chain/app-sdk";
-
-await executeBridgeQuote({ quote, wallet });
+await executeBridgeQuote({ quote: quoteResp, wallet });
 ```
 
-`targetRecipient` is optional. When it is omitted, the bridge recipient defaults to `userAddress` on the bridge API side. Set it only when the destination recipient is different from the connected wallet address.
+If your UI lets the user manually choose a provider, render `allProviderQuotes`, then create an `executableQuote` from the selected provider. Do not parse `providerQuotes[provider].quote.result.steps` yourself.
+
+```ts
+const allProviderQuotes = quoteResp.selection.providerOrder
+  .map((providerId) => quoteResp.providerQuotes[providerId])
+  .filter((providerQuote) => providerQuote !== undefined);
+
+const userSelectedProvider = allProviderQuotes[0]?.providerId;
+if (!userSelectedProvider) {
+  throw new Error("No bridge provider quotes returned");
+}
+
+const executableQuote = selectBridgeProviderQuote(quoteResp, userSelectedProvider);
+
+console.log(
+  "Bridge steps:",
+  executableQuote.steps.map((step) => ({
+    id: step.id,
+    kind: step.kind,
+    chainId: step.chainId,
+    label: step.label,
+    to: step.request?.to,
+    data: step.request?.data,
+    value: step.request?.value.toString(),
+  })),
+);
+```
+
+For execution, pass `executableQuote` to `executeBridgeQuote({ quote: executableQuote, wallet })`.
+
+When debugging provider selection, failed quotes, or fallback behavior, log:
+
+```ts
+console.log("selected provider", quoteResp.selectedProvider);
+console.log("provider quotes", quoteResp.providerQuotes);
+console.log("raw bridge api response", quoteResp.raw);
+```
+
+### 3. Records
+
+Query and display bridge records with the SDK records helper:
+
+```ts
+const recordsResp = await eni.bridge.records({
+  user: userAddress,
+  page: 1,
+  limit: 10,
+  assetSymbol: tokenSymbol,
+});
+
+if (recordsResp.code !== 0 || !recordsResp.data) {
+  console.warn("Bridge records query failed:", recordsResp.msg);
+} else {
+  console.log(
+    "Recent bridge records:",
+    recordsResp.data.list.map((record) => ({
+      protocol: record.protocol,
+      direction: record.direction,
+      status: record.status,
+      route: `${record.sourceChainId || "?"} -> ${record.targetChainId || "?"}`,
+      amount: `${record.sourceAmount || "0"} ${record.assetSymbol}`,
+      sourceTxHash: record.sourceTxHash,
+      targetTxHash: record.targetTxHash,
+      time: record.time,
+    })),
+  );
+}
+```
 
 ## Gas Exchange Demo
 

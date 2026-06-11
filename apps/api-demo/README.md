@@ -7,7 +7,7 @@ This demo shows two direct integration paths:
 - Bridge: call the `bridge-api` HTTP endpoints to get routes, quotes, executable transaction steps, and bridge history.
 - Gas exchange: call the ENI `GasExchange` contract directly and build `approve` / `exchange` calldata with ABI helpers.
 
-It does not depend on `@eni-chain/app-sdk`. It is intended for backend services, gateways, or applications that already have their own wallet layer. The reusable code lives in `src/lib`; project teams can copy that directory and import from `src/lib/index.ts`. The `src/*-demo.ts` files only show minimal main flows.
+It is intended for backend services, gateways, or applications that already have their own wallet layer. The reusable code lives in `src/lib`; project teams can copy that directory and import from `src/lib/index.ts`. The `src/*-demo.ts` files only show minimal main flows.
 
 ## Run
 
@@ -56,6 +56,7 @@ Key rules:
 - `/quote` `amount` is a human-readable decimal string, for example `"1.23"`. Do not send wei or smallest-unit integers.
 - `/quote` fields such as `steps[].tx.value`, `details.sourceTokenAmount`, and `details.destTokenAmount` are usually smallest-unit integer strings.
 - `tokenKey` is the unified asset symbol, for example `USDT`, not an on-chain token address.
+- This demo's `/quote` helper does not expose provider override parameters. Omitting provider parameters means automatic route recommendation.
 - HTTP 200 does not guarantee an executable route. Check `/quote` `result` and `steps`.
 - `/records` returns `{ code, msg, data }`, not the `status/result` envelope. Treat `code !== 0` or `data = null` as a failed query.
 
@@ -82,7 +83,6 @@ const toChain = 173;
 const tokenSymbol = "USDT";
 const amount = "1";
 const userAddress = "0x1234567890abcdef1234567890abcdef12345678";
-const targetRecipient = userAddress;
 
 const quoteResp = await bridgeAPI.quote({
   fromChain,
@@ -90,13 +90,12 @@ const quoteResp = await bridgeAPI.quote({
   tokenSymbol,
   amount,
   userAddress,
-  // Optional. If omitted, the API uses userAddress as the recipient.
-  targetRecipient,
 });
 
 const recommendedProvider = getRecommendedProvider(quoteResp);
 const availableProviders = getAvailableProviders(quoteResp);
-const selectedSteps = getQuoteSteps(quoteResp);
+const selectedProvider = recommendedProvider || availableProviders[0]?.providerId || null;
+const selectedSteps = selectedProvider ? getQuoteSteps(quoteResp, selectedProvider) : [];
 
 for (const step of selectedSteps) {
   // Send step.tx with your wallet layer.

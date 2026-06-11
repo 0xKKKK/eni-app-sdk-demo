@@ -25,10 +25,10 @@ async function prepareGasExchange(approvalMode: GasExchangeApprovalMode) {
   });
 }
 
-const approvePlan = await prepareGasExchange("approve");
-const permitPlan = await prepareGasExchange("permit");
 
 // Standard approve flow: send approve first, then send the exchange transaction.
+const approvePlan = await prepareGasExchange("approve");
+
 console.log(
   "Approve mode steps:",
   approvePlan.steps.map((step) => ({
@@ -42,7 +42,8 @@ console.log(
 );
 
 // Permit flow: ask the user to sign typed data, then submit the permit-enabled exchange
-// with your backend or contract flow when full permit inputs are available.
+const permitPlan = await prepareGasExchange("permit");
+
 console.log(
   "Permit mode steps:",
   permitPlan.steps.map((step) => ({

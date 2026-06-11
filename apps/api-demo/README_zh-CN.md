@@ -7,7 +7,7 @@
 - 跨链桥：调用 `bridge-api` 的 HTTP 接口获取链目录、路线和可执行交易步骤。
 - Gas 兑换：直接调用 ENI 链上的 `GasExchange` 合约，用 ABI 构造 `approve` 和 `exchange` 交易。
 
-它不依赖 `@eni-chain/app-sdk`，适合后端、中台、网关或已有自定义钱包层的前端参考。`src/lib` 目录是可复用封装，项目方可以直接复制到自己的项目中，并从 `src/lib/index.ts` 统一导入；`src/*-demo.ts` 只展示最小主流程。
+它适合后端、中台、网关或已有自定义钱包层的前端参考。`src/lib` 目录是可复用封装，项目方可以直接复制到自己的项目中，并从 `src/lib/index.ts` 统一导入；`src/*-demo.ts` 只展示最小主流程。
 
 ## 运行
 
@@ -56,6 +56,7 @@ POST /v1/bridge/quote
 - `/quote` 的 `amount` 传人类可读金额字符串，例如 `"1.23"`，不要传 wei 或最小单位。
 - `/quote` 返回的 `steps[].tx.value`、`details.sourceTokenAmount`、`details.destTokenAmount` 通常是最小单位整数字符串。
 - `tokenKey` 是统一资产标识，例如 `USDT`，不是链上 token 地址。
+- 这个 demo 的 `/quote` helper 不暴露 provider override 参数；不传 provider 参数就是自动推荐路线。
 - HTTP 200 不代表一定拿到可执行路线，仍需检查 `/quote` 的 `result` 和 `steps`。
 - `/records` 返回 `{ code, msg, data }`，不是 `status/result` 包裹；`code !== 0` 或 `data = null` 都应按查询失败处理。
 
@@ -82,7 +83,6 @@ const toChain = 173;
 const tokenSymbol = "USDT";
 const amount = "1";
 const userAddress = "0x1234567890abcdef1234567890abcdef12345678";
-const targetRecipient = userAddress;
 
 const quoteResp = await bridgeAPI.quote({
   fromChain,
@@ -90,13 +90,12 @@ const quoteResp = await bridgeAPI.quote({
   tokenSymbol,
   amount,
   userAddress,
-  // Optional. If omitted, the API uses userAddress as the recipient.
-  targetRecipient,
 });
 
 const recommendedProvider = getRecommendedProvider(quoteResp);
 const availableProviders = getAvailableProviders(quoteResp);
-const selectedSteps = getQuoteSteps(quoteResp);
+const selectedProvider = recommendedProvider || availableProviders[0]?.providerId || null;
+const selectedSteps = selectedProvider ? getQuoteSteps(quoteResp, selectedProvider) : [];
 
 for (const step of selectedSteps) {
   // Send step.tx with your wallet layer.

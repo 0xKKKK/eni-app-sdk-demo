@@ -7,7 +7,7 @@
     "gas": "bun run src/gas-exchange-demo.ts"
   },
   "dependencies": {
-    "@eni-chain/app-sdk": "0.1.1"
+    "@eni-chain/app-sdk": "0.1.2"
   },
   "devDependencies": {
     "typescript": "^5.7.0"

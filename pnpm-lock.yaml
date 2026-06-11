@@ -25,8 +25,8 @@ importers:
   apps/sdk-demo:
     dependencies:
       '@eni-chain/app-sdk':
-        specifier: 0.1.1
-        version: 0.1.1(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+        specifier: 0.1.2
+        version: 0.1.2(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
     devDependencies:
       typescript:
         specifier: ^5.7.0
@@ -35,8 +35,8 @@ importers:
   apps/widgets-react-demo:
     dependencies:
       '@eni-chain/app-sdk':
-        specifier: 0.1.1
-        version: 0.1.1(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+        specifier: 0.1.2
+        version: 0.1.2(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
       '@eni-chain/app-sdk-react':
         specifier: 0.1.1
         version: 0.1.1(react@18.3.1)(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
@@ -69,8 +69,8 @@ importers:
   apps/widgets-vue-demo:
     dependencies:
       '@eni-chain/app-sdk':
-        specifier: 0.1.1
-        version: 0.1.1(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+        specifier: 0.1.2
+        version: 0.1.2(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
       '@eni-chain/app-sdk-vue':
         specifier: 0.1.1
         version: 0.1.1(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))(vue@3.5.35(typescript@5.9.3))
@@ -182,8 +182,14 @@ packages:
   '@eni-chain/app-sdk-bridge@0.1.1':
     resolution: {integrity: sha512-t3gou8bcGPX+rq0BIq2NpQ+YMeiR0Pi/KH/3InCMQdoaSl4cGUKMXS3mXhP/jEFYXnG2/JGlRf3XTiz/op3yKg==}
 
+  '@eni-chain/app-sdk-bridge@0.1.2':
+    resolution: {integrity: sha512-NouV+ZWydwXZU4FMZfJJuxER+csvFTCoFgJ+xrBM66cUCyg8ITSAWo+wBwmkQn6k7Myk1NJTqgSDhNZI62Z40w==}
+
   '@eni-chain/app-sdk-core@0.1.1':
     resolution: {integrity: sha512-8DUnqABvISLXcYS5rtGdYA0+LviLclHSKpP/U6ecbJPfzlHDTzAAjz93XIFzxcMjx21ItK8kNi3V7DAltnd4dQ==}
+
+  '@eni-chain/app-sdk-core@0.1.2':
+    resolution: {integrity: sha512-2Qmu1LBIqlbV9NOAU2+ojWxjNk5NX6KJrfnA9+j21UKiEII/E2+pp5zoZIjFDxUjOL76q2XsfpnbbVDUURf7uQ==}
 
   '@eni-chain/app-sdk-gas-exchange@0.1.1':
     resolution: {integrity: sha512-uvOBADAcDcfiFumsv4t1krGqx73an4/vzDQRue/onS2OYTulx4woK3hYoBIQuUE1Oh2h6Nr1+JVKhl9kfimMnA==}
@@ -221,6 +227,9 @@ packages:
 
   '@eni-chain/app-sdk@0.1.1':
     resolution: {integrity: sha512-bZpBEhwPI1Drcyz5R0RHyQtByer8iQf/a7oZZqJzCjbjHycImWUovL1Lf+aPLBC52mnt1VhIOa+pRN6XV3ZEcg==}
+
+  '@eni-chain/app-sdk@0.1.2':
+    resolution: {integrity: sha512-6xLlfhLgSF7UTCk7xdqdug8H7Kb2hIZ+2s5hEjgyoy7237nrP/aLky2Nw6eTQHHb1X2IyXAIhO7EkVEaDRhAoA==}
 
   '@esbuild/aix-ppc64@0.25.12':
     resolution: {integrity: sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA==}
@@ -1337,7 +1346,16 @@ snapshots:
     transitivePeerDependencies:
       - viem
 
+  '@eni-chain/app-sdk-bridge@0.1.2(viem@2.52.2(typescript@5.9.3))':
+    dependencies:
+      '@eni-chain/app-sdk-core': 0.1.2
+      '@eni-chain/app-sdk-wallet-adapters': 0.1.1(viem@2.52.2(typescript@5.9.3))
+    transitivePeerDependencies:
+      - viem
+
   '@eni-chain/app-sdk-core@0.1.1': {}
+
+  '@eni-chain/app-sdk-core@0.1.2': {}
 
   '@eni-chain/app-sdk-gas-exchange@0.1.1(typescript@5.9.3)':
     dependencies:
@@ -1432,6 +1450,20 @@ snapshots:
     dependencies:
       '@eni-chain/app-sdk-bridge': 0.1.1(viem@2.52.2(typescript@5.9.3))
       '@eni-chain/app-sdk-core': 0.1.1
+      '@eni-chain/app-sdk-gas-exchange': 0.1.1(typescript@5.9.3)
+      '@eni-chain/app-sdk-swap': 0.1.1(typescript@5.9.3)
+      '@eni-chain/app-sdk-wallet-adapters': 0.1.1(viem@2.52.2(typescript@5.9.3))
+    transitivePeerDependencies:
+      - bufferutil
+      - typescript
+      - utf-8-validate
+      - viem
+      - zod
+
+  '@eni-chain/app-sdk@0.1.2(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))':
+    dependencies:
+      '@eni-chain/app-sdk-bridge': 0.1.2(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk-core': 0.1.2
       '@eni-chain/app-sdk-gas-exchange': 0.1.1(typescript@5.9.3)
       '@eni-chain/app-sdk-swap': 0.1.1(typescript@5.9.3)
       '@eni-chain/app-sdk-wallet-adapters': 0.1.1(viem@2.52.2(typescript@5.9.3))
