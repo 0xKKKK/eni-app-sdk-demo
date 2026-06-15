@@ -23,7 +23,7 @@
 - 直接调用 SDK 解析 bridge 路由、请求报价、执行跨链交易，并准备或执行 gas exchange plan。
 - 通过 `EniProvider` 和 `EniWidgets` 渲染完整 ENI 挂件。
 - 开启或关闭 Bridge、Gas、Swap、Tools 模块。
-- 配置语言、主题、工具栏、默认模块、Token 预设、滑点和快捷链接。
+- 配置语言、主题、工具栏、默认模块、token 预设、滑点、交易税和快捷链接。
 - 当业务项目只需要 Bridge、Swap、Gas 或 Tools 时，单独渲染对应的独立挂件。
 
 ## Workspace Setup

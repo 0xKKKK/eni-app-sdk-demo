@@ -81,6 +81,7 @@ const swapFromSymbol = ref<TokenSymbol>("PRJ");
 const swapToSymbol = ref<TokenSymbol>("USDT");
 const swapInputSide = ref<"from" | "to">("from");
 const slippageBps = ref("50");
+const taxBps = ref("0");
 const toolsTokenSymbols = ref("PRJ");
 const defaultDetailsOpen = ref(false);
 const defaultSettingsOpen = ref(false);
@@ -95,6 +96,7 @@ const swapPath = computed(() => [swapFromToken.value.address, swapToToken.value.
 const toolsTokens = computed(() => parseTokenList(toolsTokenSymbols.value));
 const toolsLinks = computed(() => parseToolLinks(DEFAULT_TOOLS_LINKS_CONFIG));
 const parsedSlippageBps = computed(() => Number.parseInt(slippageBps.value, 10) || 50);
+const parsedTaxBps = computed(() => Number.parseInt(taxBps.value, 10) || 0);
 const sdk = computed<EniApp | null>(() => {
   if (!wallet.value) return null;
 
@@ -133,6 +135,7 @@ const sdk = computed<EniApp | null>(() => {
           defaultAmount: swapAmount.value,
           defaultInputSide: swapInputSide.value,
           defaultSlippageBps: parsedSlippageBps.value,
+          defaultTaxBps: parsedTaxBps.value,
           defaultDetailsOpen: defaultDetailsOpen.value,
           defaultSettingsOpen: defaultSettingsOpen.value,
         },
@@ -162,6 +165,7 @@ const sourceCode = computed(() =>
     radius: radius.value,
     showToolbar: showToolbar.value,
     slippageBps: parsedSlippageBps.value,
+    taxBps: parsedTaxBps.value,
     swapAmount: swapAmount.value,
     swapFromSymbol: swapFromSymbol.value,
     swapInputSide: swapInputSide.value,
@@ -280,6 +284,7 @@ function createSourceExample(config: {
   radius: string;
   showToolbar: boolean;
   slippageBps: number;
+  taxBps: number;
   swapAmount: string;
   swapFromSymbol: TokenSymbol;
   swapInputSide: "from" | "to";
@@ -319,6 +324,7 @@ function createSourceExample(config: {
           defaultAmount: "${config.swapAmount}",
           defaultInputSide: "${config.swapInputSide}",
           defaultSlippageBps: ${config.slippageBps},
+          defaultTaxBps: ${config.taxBps},
           defaultDetailsOpen: ${config.defaultDetailsOpen},
           defaultSettingsOpen: ${config.defaultSettingsOpen},
         },`
@@ -574,6 +580,10 @@ function formatSourceTokenReference(symbol: TokenSymbol): string {
                 <label class="demo-field">
                   <span>Slippage bps</span>
                   <input v-model="slippageBps" inputmode="numeric" />
+                </label>
+                <label class="demo-field">
+                  <span>Tax bps</span>
+                  <input v-model="taxBps" inputmode="numeric" />
                 </label>
                 <label class="demo-toggle">
                   <input v-model="defaultDetailsOpen" type="checkbox" />

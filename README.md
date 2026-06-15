@@ -23,7 +23,7 @@ Choose one of the following integration paths based on how much UI and SDK abstr
 - Calling the SDK directly to resolve bridge routes, request quotes, execute cross-chain transactions, and prepare or execute gas exchange plans.
 - Rendering the full ENI widget experience with `EniProvider` and `EniWidgets`.
 - Enabling or disabling Bridge, Gas, Swap, and Tools modules.
-- Customizing language, theme, toolbar visibility, default module, token presets, slippage, and quick links.
+- Customizing language, theme, toolbar visibility, default module, token presets, slippage, swap tax, and quick links.
 - Rendering standalone module widgets when a host app only needs Bridge, Swap, Gas, or Tools.
 
 ## Workspace Setup

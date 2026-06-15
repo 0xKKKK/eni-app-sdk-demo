@@ -109,6 +109,7 @@ export function EniWidgetPanel({ provider, onConnectWallet }: EniWidgetPanelProp
             defaultAmount: "",
             defaultInputSide: "from",
             defaultSlippageBps: 50,
+            defaultTaxBps: 0,
             defaultDetailsOpen: false,
             defaultSettingsOpen: false,
           },
@@ -186,6 +187,7 @@ export function SwapOnly({ eni, wallet }: { eni: any; wallet: any }) {
         defaultAmount="1"
         defaultInputSide="from"
         defaultSlippageBps={50}
+        defaultTaxBps={0}
         onSwapComplete={(result) => {
           console.log("Swap complete", result);
         }}
@@ -203,6 +205,7 @@ Standalone widgets can also receive `client`, `wallet`, `testnet`, `account`, `r
 - `widgets.theme`: controls `mode`, `primaryColor`, `background`, and `radius`.
 - `widgets.ui.defaultModule`: accepts `"bridge"`, `"gas"`, `"trade"`, or `"tools"`.
 - `widgets.modules.trade`: configures the Swap module. The full SDK config key is `trade`, while the standalone component is named `SwapWidget`.
+- `defaultSlippageBps` and `defaultTaxBps` both use `10000` as the denominator. The widget shows their sum as the effective slippage tolerance. A non-zero `defaultTaxBps` is for exact-in ERC20-to-ERC20 fee-on-transfer swaps.
 - `EniWidgets` also supports direct visibility props such as `showBridge`, `showGasExchange`, `showSwap`, `showTools`, and `defaultMode` when you configure the shell without `widgets.modules`.
 
 ## Demo Files

@@ -108,6 +108,7 @@ const eni = computed(() => {
           defaultAmount: "",
           defaultInputSide: "from",
           defaultSlippageBps: 50,
+          defaultTaxBps: 0,
           defaultDetailsOpen: false,
           defaultSettingsOpen: false,
         },
@@ -195,6 +196,7 @@ const swapPath = [fromToken.address, toToken.address] as const;
       default-amount="1"
       default-input-side="from"
       :default-slippage-bps="50"
+      :default-tax-bps="0"
       :on-swap-complete="(result) => console.log('Swap complete', result)"
     />
   </EniProvider>
@@ -209,6 +211,7 @@ const swapPath = [fromToken.address, toToken.address] as const;
 - `widgets.theme`：配置 `mode`、`primaryColor`、`background`、`radius`。
 - `widgets.ui.defaultModule`：可设置为 `"bridge"`、`"gas"`、`"trade"` 或 `"tools"`。
 - `widgets.modules.trade`：对应 Swap 模块。完整 SDK 配置里 key 是 `trade`，独立组件名是 `SwapWidget`。
+- `defaultSlippageBps` 和 `defaultTaxBps` 的分母都是 `10000`。挂件会展示两者相加后的最终滑点容忍度。`defaultTaxBps` 不为 `0` 时用于 exact-in 的 ERC20-to-ERC20 带税交易。
 - `EniWidgets` 也支持 `showBridge`、`showGasExchange`、`showSwap`、`showTools`、`defaultMode` 等直接控制完整挂件 shell 的 props。
 
 ## 示例文件

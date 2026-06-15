@@ -28,7 +28,14 @@ cd apps/sdk-demo
 bun run gas
 ```
 
-两个脚本都使用固定示例参数，不需要连接钱包。它们只准备 route 或 transaction steps，业务应用可以先展示给用户，再让用户确认执行。
+运行 swap plan demo：
+
+```bash
+cd apps/sdk-demo
+bun run swap
+```
+
+这些脚本都使用固定示例参数，不需要连接钱包。它们只准备 route 或 transaction steps，业务应用可以先展示给用户，再让用户确认执行。
 
 ## 跨链 Demo
 
@@ -170,3 +177,32 @@ const result = await eni.gasExchange.execute({ plan, wallet });
 ```
 
 执行前建议先展示 plan steps，让用户知道需要确认几次钱包操作。
+
+## Swap Demo
+
+源码：[`src/swap-demo.ts`](./src/swap-demo.ts)
+
+swap demo 会准备一个 exact-in 的 `USDT -> WEGAS` 交易，并演示项目方配置滑点和交易税。
+
+```ts
+const plan = await eni.swap.prepare({
+  chain,
+  allowance: 1000000000000000000n,
+  wallet,
+  request: {
+    chainId: chain.chainId,
+    fromToken: eni.tokens.usdt,
+    toToken: eni.tokens.wegas,
+    amount: "1",
+    amountMode: "exact-in",
+    slippageBps: 50,
+    taxBps: 0,
+    userAddress,
+    recipient: userAddress,
+  },
+});
+```
+
+`slippageBps` 和 `taxBps` 的分母都是 `10000`。SDK 会把两者相加，并用 `effectiveSlippageBps` 计算 `amountOutMin`。
+
+当 `taxBps` 不为 `0` 时，SDK 只支持 exact-in ERC20-to-ERC20 交易，并编码调用 `swapExactTokensForTokensSupportingFeeOnTransferTokens`。省略 `taxBps` 或传 `0` 时，会使用标准 `swapExactTokensForTokens` 路径。

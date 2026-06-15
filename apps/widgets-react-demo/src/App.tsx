@@ -73,6 +73,7 @@ export function App() {
   const [swapToSymbol, setSwapToSymbol] = useState<TokenSymbol>("USDT");
   const [swapInputSide, setSwapInputSide] = useState<"from" | "to">("from");
   const [slippageBps, setSlippageBps] = useState("50");
+  const [taxBps, setTaxBps] = useState("0");
   const [toolsTokenSymbols, setToolsTokenSymbols] = useState("PRJ");
   const [defaultDetailsOpen, setDefaultDetailsOpen] = useState(false);
   const [defaultSettingsOpen, setDefaultSettingsOpen] = useState(false);
@@ -90,6 +91,7 @@ export function App() {
   const toolsTokens = useMemo(() => parseTokenList(toolsTokenSymbols), [toolsTokenSymbols]);
   const toolsLinks = useMemo(() => parseToolLinks(DEFAULT_TOOLS_LINKS_CONFIG), []);
   const parsedSlippageBps = Number.parseInt(slippageBps, 10) || 50;
+  const parsedTaxBps = Number.parseInt(taxBps, 10) || 0;
   const sdk = useMemo(
     () => {
       if (!wallet) return null;
@@ -129,6 +131,7 @@ export function App() {
               defaultAmount: swapAmount,
               defaultInputSide: swapInputSide,
               defaultSlippageBps: parsedSlippageBps,
+              defaultTaxBps: parsedTaxBps,
               defaultDetailsOpen,
               defaultSettingsOpen,
             },
@@ -155,6 +158,7 @@ export function App() {
       modules.tools,
       modules.trade,
       parsedSlippageBps,
+      parsedTaxBps,
       panelBackgroundColor,
       primaryColor,
       radius,
@@ -190,6 +194,7 @@ export function App() {
         radius,
         showToolbar,
         slippageBps: parsedSlippageBps,
+        taxBps: parsedTaxBps,
         swapAmount,
         swapFromSymbol,
         swapInputSide,
@@ -208,6 +213,7 @@ export function App() {
       language,
       modules,
       parsedSlippageBps,
+      parsedTaxBps,
       panelBackgroundColor,
       primaryColor,
       radius,
@@ -421,6 +427,7 @@ export function App() {
                       swapToSymbol={swapToSymbol}
                       swapInputSide={swapInputSide}
                       slippageBps={slippageBps}
+                      taxBps={taxBps}
                       toolsTokenSymbols={toolsTokenSymbols}
                       defaultDetailsOpen={defaultDetailsOpen}
                       defaultSettingsOpen={defaultSettingsOpen}
@@ -434,6 +441,7 @@ export function App() {
                       onSwapToSymbolChange={setSwapToSymbol}
                       onSwapInputSideChange={setSwapInputSide}
                       onSlippageBpsChange={setSlippageBps}
+                      onTaxBpsChange={setTaxBps}
                       onToolsTokenSymbolsChange={setToolsTokenSymbols}
                       onDefaultDetailsOpenChange={setDefaultDetailsOpen}
                       onDefaultSettingsOpenChange={setDefaultSettingsOpen}
@@ -484,6 +492,7 @@ interface ModuleSettingsProps {
   swapToSymbol: TokenSymbol;
   swapInputSide: "from" | "to";
   slippageBps: string;
+  taxBps: string;
   toolsTokenSymbols: string;
   defaultDetailsOpen: boolean;
   defaultSettingsOpen: boolean;
@@ -497,6 +506,7 @@ interface ModuleSettingsProps {
   onSwapToSymbolChange: (value: TokenSymbol) => void;
   onSwapInputSideChange: (value: "from" | "to") => void;
   onSlippageBpsChange: (value: string) => void;
+  onTaxBpsChange: (value: string) => void;
   onToolsTokenSymbolsChange: (value: string) => void;
   onDefaultDetailsOpenChange: (value: boolean) => void;
   onDefaultSettingsOpenChange: (value: boolean) => void;
@@ -536,6 +546,7 @@ function ModuleSettings(props: ModuleSettingsProps) {
           </select>
         </label>
         <DemoTextField label="Slippage bps" value={props.slippageBps} onChange={props.onSlippageBpsChange} />
+        <DemoTextField label="Tax bps" value={props.taxBps} onChange={props.onTaxBpsChange} />
         <label className="demo-toggle">
           <input type="checkbox" checked={props.defaultDetailsOpen} onChange={(event) => props.onDefaultDetailsOpenChange(event.target.checked)} />
           <span>Details open</span>
@@ -627,6 +638,7 @@ function createSourceExample(config: {
   radius: string;
   showToolbar: boolean;
   slippageBps: number;
+  taxBps: number;
   swapAmount: string;
   swapFromSymbol: TokenSymbol;
   swapInputSide: "from" | "to";
@@ -666,6 +678,7 @@ function createSourceExample(config: {
         defaultAmount: "${config.swapAmount}",
         defaultInputSide: "${config.swapInputSide}",
         defaultSlippageBps: ${config.slippageBps},
+        defaultTaxBps: ${config.taxBps},
         defaultDetailsOpen: ${config.defaultDetailsOpen},
         defaultSettingsOpen: ${config.defaultSettingsOpen},
       },`

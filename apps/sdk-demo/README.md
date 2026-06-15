@@ -28,7 +28,14 @@ cd apps/sdk-demo
 bun run gas
 ```
 
-Both scripts use fixed demo parameters and do not require a connected wallet. They prepare route or transaction steps that your application can display before asking the user to confirm execution.
+Run the swap plan demo:
+
+```bash
+cd apps/sdk-demo
+bun run swap
+```
+
+These scripts use fixed demo parameters and do not require a connected wallet. They prepare route or transaction steps that your application can display before asking the user to confirm execution.
 
 ## Bridge Demo
 
@@ -170,3 +177,32 @@ const result = await eni.gasExchange.execute({ plan, wallet });
 ```
 
 Always display the prepared steps before execution so the user understands how many wallet confirmations are required.
+
+## Swap Demo
+
+Source: [`src/swap-demo.ts`](./src/swap-demo.ts)
+
+The swap demo prepares an exact-in `USDT -> WEGAS` swap with a project-configured slippage and swap tax.
+
+```ts
+const plan = await eni.swap.prepare({
+  chain,
+  allowance: 1000000000000000000n,
+  wallet,
+  request: {
+    chainId: chain.chainId,
+    fromToken: eni.tokens.usdt,
+    toToken: eni.tokens.wegas,
+    amount: "1",
+    amountMode: "exact-in",
+    slippageBps: 50,
+    taxBps: 0,
+    userAddress,
+    recipient: userAddress,
+  },
+});
+```
+
+`slippageBps` and `taxBps` both use `10000` as the denominator. The SDK adds them together and uses the result as `effectiveSlippageBps` for `amountOutMin`.
+
+When `taxBps` is non-zero, the SDK only supports exact-in ERC20-to-ERC20 swaps and encodes `swapExactTokensForTokensSupportingFeeOnTransferTokens`. When `taxBps` is omitted or `0`, the standard `swapExactTokensForTokens` path is used.
