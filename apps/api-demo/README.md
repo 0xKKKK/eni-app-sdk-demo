@@ -5,7 +5,7 @@
 This demo shows two direct integration paths:
 
 - Bridge: call the `bridge-api` HTTP endpoints to get routes, quotes, executable transaction steps, and bridge history.
-- Gas exchange: call the ENI `GasExchange` contract directly and build `approve` / `exchange` calldata with ABI helpers.
+- Gas exchange: call the ENI `GasExchange` contract directly, build `approve` / `exchange` calldata, and prepare gas sponsorship relay payloads with ABI helpers.
 
 It is intended for backend services, gateways, or applications that already have their own wallet layer. The reusable code lives in `src/lib`; project teams can copy that directory and import from `src/lib/index.ts`. The `src/*-demo.ts` files only show minimal main flows.
 
@@ -26,7 +26,7 @@ bun run gas
 https://bridge-api.eniac.network
 ```
 
-`gas` only prints calldata. It does not submit transactions.
+`gas` only prints calldata and gas sponsorship payload examples. It does not submit transactions or relay requests.
 
 ## Bridge API Flow
 
@@ -192,9 +192,9 @@ function exchangeWithPermitV2(
 ) external
 ```
 
-### Two Approval Modes
+### Approval and Sponsorship Modes
 
-ERC20 exchange flows must allow `GasExchange` to spend the user's `fromToken`. There are two common modes:
+ERC20 exchange flows must allow `GasExchange` to spend the user's `fromToken`. There are three common modes:
 
 1. **Standard `approve`**
 
@@ -228,6 +228,47 @@ ERC20 exchange flows must allow `GasExchange` to spend the user's `fromToken`. T
    });
    ```
 
+3. **Gas sponsorship relay**
+
+   In SDK `0.1.4`, gas sponsorship is available for ENI-Peg USDT -> native EGAS. The user signs an EIP-2612 permit, then the app submits the signed payload to the ENI relay instead of asking the user to pay network gas. The relay submits `exchangeWithPermitV2` and deducts `1 EGAS` from the received EGAS after execution.
+
+   This mode is intentionally narrower than generic `permit`:
+
+   - `fromToken` must be ENI-Peg USDT.
+   - `toToken` must be native EGAS (`ZERO_ADDRESS`).
+   - Custom recipients are not supported.
+   - Read `name`, `nonces(user)`, and EIP-712 version from the USDT contract before signing.
+
+   ```ts
+   const typedData = buildGaslessPermitTypedData({
+     chainId: deployment.chainId,
+     tokenName,
+     tokenVersion,
+     tokenAddress: deployment.eniPegUsdt,
+     owner: userAddress,
+     gasExchangeAddress: deployment.gasExchange,
+     amount: parseUnits("1", 18),
+     nonce,
+     deadline,
+   });
+
+   const signature = await wallet.signTypedData(typedData);
+   const payload = buildGaslessRelayPayload({
+     fromToken: deployment.eniPegUsdt,
+     toToken: ZERO_ADDRESS,
+     user: userAddress,
+     amount: parseUnits("1", 18),
+     deadline,
+     signature,
+   });
+
+   await fetch(deployment.gaslessRelayUrl, {
+     method: "POST",
+     headers: { "content-type": "application/json" },
+     body: JSON.stringify(payload),
+   });
+   ```
+
 Event:
 
 ```solidity
@@ -246,6 +287,7 @@ Mainnet:
 
 ```text
 GasExchange:    0x37CCd90ed5FA96207B41C4fBCB90b883e30e63DC
+Gasless relay:  https://xplan.eniac.network/api/gasless_approvalv2
 ENI-Peg USDT:   0xDC1a8A35b0BaA3229b13f348ED708a2fd50b5e3a
 Orbiter USDT:   0x47c98f74dBC1acc4cf2e04C4a729E22379EF4373
 Hyperlane USDT: 0x545E289B88c6d97b74eC0B96e308cae46Bf5f832
@@ -255,6 +297,7 @@ Testnet:
 
 ```text
 GasExchange:   0x6741B16197ab5575d5A8C904159d4ef80ee1e6Bf
+Gasless relay: https://xplan.eniapp.dev/api/gasless_approvalv2
 ENI-Peg USDT:  0x605AfFcF6979AfddabE6A050b182bDC390fC71fF
 ```
 
@@ -266,23 +309,37 @@ By default, the demo builds an ENI mainnet ENI-Peg USDT -> EGAS transaction plan
 bun run gas
 ```
 
-The main flow only calls the lib to build `approve` and `exchange` transactions. In a real app, send `transactions` in order through your wallet layer.
+The main flow calls the lib to build `approve` and `exchange` transactions, then prints a gas sponsorship typed-data and relay-payload example. In a real app, send `transactions` in order through your wallet layer for the standard path, or sign the typed data and post the relay payload for gas sponsorship.
 
 ```ts
 import { parseUnits } from "viem";
 import {
+  buildGaslessPermitTypedData,
   buildGasExchangeTransactions,
   GAS_EXCHANGE_DEPLOYMENTS,
   ZERO_ADDRESS,
 } from "./lib";
 
 const deployment = GAS_EXCHANGE_DEPLOYMENTS.mainnet;
+const amount = parseUnits("1", 18);
 const transactions = buildGasExchangeTransactions({
   gasExchangeAddress: deployment.gasExchange,
   fromToken: deployment.eniPegUsdt,
   toToken: ZERO_ADDRESS,
-  amount: parseUnits("1", 18),
+  amount,
   includeApprove: true,
+});
+
+const typedData = buildGaslessPermitTypedData({
+  chainId: deployment.chainId,
+  tokenName: "ENI-Peg USDT",
+  tokenVersion: "1",
+  tokenAddress: deployment.eniPegUsdt,
+  owner: userAddress,
+  gasExchangeAddress: deployment.gasExchange,
+  amount,
+  nonce,
+  deadline,
 });
 ```
 
@@ -292,4 +349,4 @@ Before sending real transactions, confirm:
 - `amount` matches the input token decimals.
 - The contract has enough target-asset liquidity.
 
-Core files: [src/lib/gas-exchange.ts](./src/lib/gas-exchange.ts) and [src/gas-exchange-demo.ts](./src/gas-exchange-demo.ts).
+Core files: [src/lib/gas-exchange.ts](./src/lib/gas-exchange.ts), [src/lib/gas-exchange.test.ts](./src/lib/gas-exchange.test.ts), and [src/gas-exchange-demo.ts](./src/gas-exchange-demo.ts).

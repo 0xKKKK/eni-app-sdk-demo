@@ -2,7 +2,7 @@
 
 [中文文档](./README_zh-CN.md) | [Back to root](../../README.md)
 
-This app demonstrates how to use `@eni-chain/app-sdk-widgets-vue` in a Vue 3 application. It includes a live widget preview, configurable module settings, and generated source code for the selected configuration.
+This app demonstrates how to use `@eni-chain/app-sdk-widgets-vue` in a Vue 3 application. It includes a live widget preview, configurable module settings, gas sponsorship defaults, and generated source code for the selected configuration.
 
 ## Live Demo
 
@@ -99,6 +99,8 @@ const eni = computed(() => {
         gas: {
           enabled: true,
           defaultAmount: "",
+          defaultDirection: "usdt-to-egas",
+          defaultGasless: false,
         },
         trade: {
           enabled: true,
@@ -169,6 +171,30 @@ defineProps<{
 </template>
 ```
 
+### Gas Exchange Only
+
+```vue
+<script setup lang="ts">
+import { EniProvider, GasExchangeWidget } from "@eni-chain/app-sdk-widgets-vue";
+import "@eni-chain/app-sdk-widgets-vue/styles.css";
+
+defineProps<{
+  eni: any;
+  wallet: any;
+}>();
+</script>
+
+<template>
+  <EniProvider :sdk="eni" :wallet="wallet">
+    <GasExchangeWidget
+      default-amount=""
+      default-direction="usdt-to-egas"
+      :default-gasless="false"
+    />
+  </EniProvider>
+</template>
+```
+
 ### Swap Only
 
 ```vue
@@ -210,6 +236,7 @@ Standalone widgets can also receive `client`, `wallet`, `testnet`, `account`, `r
 - `language`: use `"auto"`, `"english"`, or `"chinese"`.
 - `widgets.theme`: controls `mode`, `primaryColor`, `background`, and `radius`.
 - `widgets.ui.defaultModule`: accepts `"bridge"`, `"gas"`, `"trade"`, or `"tools"`.
+- `widgets.modules.gas.defaultGasless`: enables gas sponsorship by default for ENI-Peg USDT -> EGAS. The relay pays network gas and deducts `1 EGAS` from the received EGAS after execution.
 - `widgets.modules.trade`: configures the Swap module. The full SDK config key is `trade`, while the standalone component is named `SwapWidget`.
 - `defaultSlippageBps` and `defaultTaxBps` both use `10000` as the denominator. The widget shows their sum as the effective slippage tolerance. A non-zero `defaultTaxBps` is for exact-in ERC20-to-ERC20 fee-on-transfer swaps.
 - `EniWidgets` also supports direct visibility props such as `showBridge`, `showGasExchange`, `showSwap`, `showTools`, and `defaultMode` when you configure the shell without `widgets.modules`.

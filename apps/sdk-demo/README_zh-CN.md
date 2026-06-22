@@ -4,7 +4,7 @@
 
 这个 demo 展示如何在不使用 React/Vue widgets 的情况下，通过 `@eni-chain/app-sdk` 接入最小主流程。
 
-SDK 已经封装了 bridge API 调用、gas exchange calldata 生成、链配置、token 配置和钱包执行 helper。适合业务项目已有自己的 UI，只需要直接接入 SDK 的场景。
+SDK 已经封装了 bridge API 调用、gas exchange calldata 生成、Gas 代付 relay 执行、链配置、token 配置和钱包执行 helper。适合业务项目已有自己的 UI，只需要直接接入 SDK 的场景。
 
 ## 运行
 
@@ -165,15 +165,41 @@ const plan = await eni.gasExchange.prepare({
 });
 ```
 
-demo 会打印两种授权模式：
+demo 会打印三种 gas exchange 模式：
 
 - `approve`：标准 ERC-20 授权。如果 allowance 不足，SDK 会返回一个 `approve` step，然后返回 gas exchange 交易 step。
 - `permit`：EIP-2612 风格的签名授权。SDK 会返回一个 `permit` 签名 step。只有业务方已经实现完整 permit 签名和提交流程时才建议使用。
+- `gasless`：ENI-Peg USDT -> EGAS 的 Gas 代付。SDK 会返回一个带 relay metadata 的 `gasless-permit-0` step，执行时签 EIP-2612 permit、提交 relay 请求，并返回 relay 交易 hash。
+
+Gas 代付使用 `executionMode: "gasless"`：
+
+```ts
+const gaslessPlan = await eni.gasExchange.prepare({
+  chain,
+  request: {
+    chainId: chain.chainId,
+    fromToken: eni.tokens.usdt,
+    toToken: eni.tokens.egas,
+    amount: "1",
+    userAddress,
+    recipient: userAddress,
+    executionMode: "gasless",
+  },
+});
+```
+
+这个模式只支持 ENI-Peg USDT -> 原生 EGAS，并会在交易完成后从到账 EGAS 中扣除 `1 EGAS`。不支持自定义 recipient。
 
 连接钱包后，可以这样执行 approve 模式的 plan：
 
 ```ts
 const result = await eni.gasExchange.execute({ plan, wallet });
+```
+
+执行 Gas 代付 plan 仍然使用同一个 executor。wallet adapter 需要支持 `readContract` 和 `signTypedData`，运行环境需要有 `fetch`：
+
+```ts
+const result = await eni.gasExchange.execute({ plan: gaslessPlan, wallet });
 ```
 
 执行前建议先展示 plan steps，让用户知道需要确认几次钱包操作。

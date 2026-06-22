@@ -4,7 +4,7 @@
 
 This demo shows the minimal main flows for integrating `@eni-chain/app-sdk` without the React or Vue widget packages.
 
-The SDK already wraps bridge API calls, gas exchange calldata generation, chain configuration, tokens, and wallet execution helpers. Use this demo when your application has its own UI and only needs the SDK integration layer.
+The SDK already wraps bridge API calls, gas exchange calldata generation, gas sponsorship relay execution, chain configuration, tokens, and wallet execution helpers. Use this demo when your application has its own UI and only needs the SDK integration layer.
 
 ## Run
 
@@ -165,15 +165,41 @@ const plan = await eni.gasExchange.prepare({
 });
 ```
 
-The demo prints two approval modes:
+The demo prints three gas exchange modes:
 
 - `approve`: standard ERC-20 approval. The SDK returns an `approve` step when allowance is insufficient, followed by the gas exchange transaction.
 - `permit`: EIP-2612-style signature flow. The SDK returns a `permit` signing step. Use this mode only if your app implements the complete permit signing and submission flow.
+- `gasless`: gas sponsorship for ENI-Peg USDT -> EGAS. The SDK returns a `gasless-permit-0` step with relay metadata, signs the EIP-2612 permit during execution, submits the relay request, and reports the relay transaction hash.
+
+Gas sponsorship uses `executionMode: "gasless"`:
+
+```ts
+const gaslessPlan = await eni.gasExchange.prepare({
+  chain,
+  request: {
+    chainId: chain.chainId,
+    fromToken: eni.tokens.usdt,
+    toToken: eni.tokens.egas,
+    amount: "1",
+    userAddress,
+    recipient: userAddress,
+    executionMode: "gasless",
+  },
+});
+```
+
+This mode is only available for ENI-Peg USDT -> native EGAS and deducts `1 EGAS` from the received EGAS after execution. Custom recipients are not supported.
 
 When your app has a connected wallet, execute an approve-mode plan with:
 
 ```ts
 const result = await eni.gasExchange.execute({ plan, wallet });
+```
+
+To execute a gas sponsorship plan, pass the gasless plan to the same executor. The wallet adapter must support `readContract` and `signTypedData`, and the runtime must provide `fetch`:
+
+```ts
+const result = await eni.gasExchange.execute({ plan: gaslessPlan, wallet });
 ```
 
 Always display the prepared steps before execution so the user understands how many wallet confirmations are required.

@@ -18,12 +18,12 @@
 
 ## 示例覆盖内容
 
-- 直接调用 bridge API quote 和 history，并构造 gas exchange 交易。
+- 直接调用 bridge API quote 和 history，并构造 gas exchange 交易和 Gas 代付 payload。
 - 使用 EIP-1193 wallet adapter 初始化 `EniSDK`。
-- 直接调用 SDK 解析 bridge 路由、请求报价、执行跨链交易，并准备或执行 gas exchange plan。
+- 直接调用 SDK 解析 bridge 路由、请求报价、执行跨链交易，并准备或执行 gas exchange plan，包括 ENI-Peg USDT -> EGAS 的 `executionMode: "gasless"`。
 - 通过 `EniProvider` 和 `EniWidgets` 渲染完整 ENI 挂件。
 - 开启或关闭 Bridge、Gas、Swap、Tools 模块。
-- 配置语言、主题、工具栏、默认模块、token 预设、滑点、交易税和快捷链接。
+- 配置语言、主题、工具栏、默认模块、token 预设、Gas 代付默认值、滑点、交易税和快捷链接。
 - 当业务项目只需要 Bridge、Swap、Gas 或 Tools 时，单独渲染对应的独立挂件。
 
 ## Workspace Setup

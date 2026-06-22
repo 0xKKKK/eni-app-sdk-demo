@@ -68,6 +68,7 @@ export function App() {
   const [bridgeToChainId, setBridgeToChainId] = useState("173");
   const [bridgeTokenKey, setBridgeTokenKey] = useState("USDT");
   const [gasAmount, setGasAmount] = useState("");
+  const [gasDefaultGasless, setGasDefaultGasless] = useState(false);
   const [swapAmount, setSwapAmount] = useState("");
   const [swapFromSymbol, setSwapFromSymbol] = useState<TokenSymbol>("PRJ");
   const [swapToSymbol, setSwapToSymbol] = useState<TokenSymbol>("USDT");
@@ -122,6 +123,8 @@ export function App() {
             gas: {
               enabled: modules.gas,
               defaultAmount: gasAmount,
+              defaultDirection: "usdt-to-egas",
+              defaultGasless: gasDefaultGasless,
             },
             trade: {
               enabled: modules.trade,
@@ -152,6 +155,7 @@ export function App() {
       defaultDetailsOpen,
       defaultSettingsOpen,
       gasAmount,
+      gasDefaultGasless,
       language,
       modules.bridge,
       modules.gas,
@@ -187,6 +191,7 @@ export function App() {
         defaultModule: resolvedDefaultModule,
         defaultSettingsOpen,
         gasAmount,
+        gasDefaultGasless,
         language,
         modules,
         panelBackgroundColor,
@@ -210,6 +215,7 @@ export function App() {
       defaultDetailsOpen,
       defaultSettingsOpen,
       gasAmount,
+      gasDefaultGasless,
       language,
       modules,
       parsedSlippageBps,
@@ -422,6 +428,7 @@ export function App() {
                       bridgeToChainId={bridgeToChainId}
                       bridgeTokenKey={bridgeTokenKey}
                       gasAmount={gasAmount}
+                      gasDefaultGasless={gasDefaultGasless}
                       swapAmount={swapAmount}
                       swapFromSymbol={swapFromSymbol}
                       swapToSymbol={swapToSymbol}
@@ -436,6 +443,7 @@ export function App() {
                       onBridgeToChainIdChange={setBridgeToChainId}
                       onBridgeTokenKeyChange={setBridgeTokenKey}
                       onGasAmountChange={setGasAmount}
+                      onGasDefaultGaslessChange={setGasDefaultGasless}
                       onSwapAmountChange={setSwapAmount}
                       onSwapFromSymbolChange={setSwapFromSymbol}
                       onSwapToSymbolChange={setSwapToSymbol}
@@ -487,6 +495,7 @@ interface ModuleSettingsProps {
   bridgeToChainId: string;
   bridgeTokenKey: string;
   gasAmount: string;
+  gasDefaultGasless: boolean;
   swapAmount: string;
   swapFromSymbol: TokenSymbol;
   swapToSymbol: TokenSymbol;
@@ -501,6 +510,7 @@ interface ModuleSettingsProps {
   onBridgeToChainIdChange: (value: string) => void;
   onBridgeTokenKeyChange: (value: string) => void;
   onGasAmountChange: (value: string) => void;
+  onGasDefaultGaslessChange: (value: boolean) => void;
   onSwapAmountChange: (value: string) => void;
   onSwapFromSymbolChange: (value: TokenSymbol) => void;
   onSwapToSymbolChange: (value: TokenSymbol) => void;
@@ -528,6 +538,15 @@ function ModuleSettings(props: ModuleSettingsProps) {
     return (
       <div className="demo-module-card__settings">
         <DemoTextField label="Amount" value={props.gasAmount} onChange={props.onGasAmountChange} />
+        <label className="demo-toggle">
+          <input
+            type="checkbox"
+            checked={props.gasDefaultGasless}
+            onChange={(event) => props.onGasDefaultGaslessChange(event.target.checked)}
+          />
+          <span>{"Default gas sponsorship USDT -> EGAS"}</span>
+        </label>
+        <p className="demo-module-note">Gas sponsorship is only available for ENI-Peg USDT to EGAS and deducts a 1 EGAS fee after execution.</p>
       </div>
     );
   }
@@ -631,6 +650,7 @@ function createSourceExample(config: {
   defaultModule: EniSdkWidgetModule;
   defaultSettingsOpen: boolean;
   gasAmount: string;
+  gasDefaultGasless: boolean;
   language: EniSdkLanguage;
   modules: DemoModuleState;
   panelBackgroundColor: string;
@@ -667,6 +687,8 @@ function createSourceExample(config: {
       ? `      gas: {
         enabled: true,
         defaultAmount: "${config.gasAmount}",
+        defaultDirection: "usdt-to-egas",
+        defaultGasless: ${config.gasDefaultGasless},
       },`
       : `      gas: { enabled: false },`,
     config.modules.trade

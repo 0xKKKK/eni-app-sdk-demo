@@ -76,6 +76,7 @@ const bridgeFromChainId = ref("56");
 const bridgeToChainId = ref("173");
 const bridgeTokenKey = ref("USDT");
 const gasAmount = ref("");
+const gasDefaultGasless = ref(false);
 const swapAmount = ref("");
 const swapFromSymbol = ref<TokenSymbol>("PRJ");
 const swapToSymbol = ref<TokenSymbol>("USDT");
@@ -126,6 +127,8 @@ const sdk = computed<EniApp | null>(() => {
         gas: {
           enabled: modules.value.gas,
           defaultAmount: gasAmount.value,
+          defaultDirection: "usdt-to-egas",
+          defaultGasless: gasDefaultGasless.value,
         },
         trade: {
           enabled: modules.value.trade,
@@ -158,6 +161,7 @@ const sourceCode = computed(() =>
     defaultModule: resolvedDefaultModule.value,
     defaultSettingsOpen: defaultSettingsOpen.value,
     gasAmount: gasAmount.value,
+    gasDefaultGasless: gasDefaultGasless.value,
     language: language.value,
     modules: modules.value,
     panelBackgroundColor: panelBackgroundColor.value,
@@ -277,6 +281,7 @@ function createSourceExample(config: {
   defaultModule: EniSdkWidgetModule;
   defaultSettingsOpen: boolean;
   gasAmount: string;
+  gasDefaultGasless: boolean;
   language: EniSdkLanguage;
   modules: DemoModuleState;
   panelBackgroundColor: string;
@@ -313,6 +318,8 @@ function createSourceExample(config: {
       ? `        gas: {
           enabled: true,
           defaultAmount: "${config.gasAmount}",
+          defaultDirection: "usdt-to-egas",
+          defaultGasless: ${config.gasDefaultGasless},
         },`
       : `        gas: { enabled: false },`,
     config.modules.trade
@@ -551,6 +558,11 @@ function formatSourceTokenReference(symbol: TokenSymbol): string {
                   <span>Amount</span>
                   <input v-model="gasAmount" inputmode="decimal" />
                 </label>
+                <label class="demo-toggle">
+                  <input v-model="gasDefaultGasless" type="checkbox" />
+                  <span>Default gas sponsorship USDT -> EGAS</span>
+                </label>
+                <p class="demo-module-note">Gas sponsorship is only available for ENI-Peg USDT to EGAS and deducts a 1 EGAS fee after execution.</p>
               </div>
 
               <div v-else-if="expandedModules[module.key] && module.key === 'trade'" class="demo-module-card__settings">

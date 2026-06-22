@@ -5,17 +5,17 @@ const requiredApps = [
     path: "apps/widgets-react-demo",
     packageName: "widgets-react-demo",
     sdkPackage: "@eni-chain/app-sdk-widgets-react",
-    widgetVersion: "0.1.3",
+    widgetVersion: "0.1.4",
   },
   {
     path: "apps/widgets-vue-demo",
     packageName: "widgets-vue-demo",
     sdkPackage: "@eni-chain/app-sdk-widgets-vue",
-    widgetVersion: "0.1.3",
+    widgetVersion: "0.1.4",
   },
 ];
 
-const appSdkVersion = "0.1.3";
+const appSdkVersion = "0.1.4";
 
 function readJson(path) {
   return JSON.parse(readFileSync(path, "utf8"));

@@ -5,17 +5,17 @@ settings:
   excludeLinksFromLockfile: false
 
 overrides:
-  '@eni-chain/app-sdk': 0.1.3
-  '@eni-chain/app-sdk-bridge': 0.1.3
-  '@eni-chain/app-sdk-core': 0.1.3
-  '@eni-chain/app-sdk-gas-exchange': 0.1.3
-  '@eni-chain/app-sdk-react': 0.1.3
-  '@eni-chain/app-sdk-swap': 0.1.3
-  '@eni-chain/app-sdk-vue': 0.1.3
-  '@eni-chain/app-sdk-wallet-adapters': 0.1.3
-  '@eni-chain/app-sdk-widgets-core': 0.1.3
-  '@eni-chain/app-sdk-widgets-react': 0.1.3
-  '@eni-chain/app-sdk-widgets-vue': 0.1.3
+  '@eni-chain/app-sdk': 0.1.4
+  '@eni-chain/app-sdk-bridge': 0.1.4
+  '@eni-chain/app-sdk-core': 0.1.4
+  '@eni-chain/app-sdk-gas-exchange': 0.1.4
+  '@eni-chain/app-sdk-react': 0.1.4
+  '@eni-chain/app-sdk-swap': 0.1.4
+  '@eni-chain/app-sdk-vue': 0.1.4
+  '@eni-chain/app-sdk-wallet-adapters': 0.1.4
+  '@eni-chain/app-sdk-widgets-core': 0.1.4
+  '@eni-chain/app-sdk-widgets-react': 0.1.4
+  '@eni-chain/app-sdk-widgets-vue': 0.1.4
 
 importers:
 
@@ -38,8 +38,8 @@ importers:
   apps/sdk-demo:
     dependencies:
       '@eni-chain/app-sdk':
-        specifier: 0.1.3
-        version: 0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+        specifier: 0.1.4
+        version: 0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
     devDependencies:
       typescript:
         specifier: ^5.7.0
@@ -48,14 +48,14 @@ importers:
   apps/widgets-react-demo:
     dependencies:
       '@eni-chain/app-sdk':
-        specifier: 0.1.3
-        version: 0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+        specifier: 0.1.4
+        version: 0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
       '@eni-chain/app-sdk-react':
-        specifier: 0.1.3
-        version: 0.1.3(react@18.3.1)(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+        specifier: 0.1.4
+        version: 0.1.4(react@18.3.1)(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
       '@eni-chain/app-sdk-widgets-react':
-        specifier: 0.1.3
-        version: 0.1.3(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)
+        specifier: 0.1.4
+        version: 0.1.4(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)
       react:
         specifier: ^18.3.0
         version: 18.3.1
@@ -82,14 +82,14 @@ importers:
   apps/widgets-vue-demo:
     dependencies:
       '@eni-chain/app-sdk':
-        specifier: 0.1.3
-        version: 0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+        specifier: 0.1.4
+        version: 0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
       '@eni-chain/app-sdk-vue':
-        specifier: 0.1.3
-        version: 0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))(vue@3.5.35(typescript@5.9.3))
+        specifier: 0.1.4
+        version: 0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))(vue@3.5.35(typescript@5.9.3))
       '@eni-chain/app-sdk-widgets-vue':
-        specifier: 0.1.3
-        version: 0.1.3(typescript@5.9.3)(vue@3.5.35(typescript@5.9.3))
+        specifier: 0.1.4
+        version: 0.1.4(typescript@5.9.3)(vue@3.5.35(typescript@5.9.3))
       vue:
         specifier: ^3.5.0
         version: 3.5.35(typescript@5.9.3)
@@ -192,48 +192,48 @@ packages:
     resolution: {integrity: sha512-4zBIxpPzowiZpusoFkyGVwakdRJUyuH5PxQ/PrqghfdFWWasvnCdPfQXHrenDai+gyLARulZjZowCOj6fjT4pA==}
     engines: {node: '>=6.9.0'}
 
-  '@eni-chain/app-sdk-bridge@0.1.3':
-    resolution: {integrity: sha512-QVn/iTuOucGnYTw7hHeDIODoimN2lpmy6z0IIWYL6CT11YAJM11o0eR/H7ijtBmqTBvF/p9zUkrdT9/EAMHUKQ==}
+  '@eni-chain/app-sdk-bridge@0.1.4':
+    resolution: {integrity: sha512-tIl2BaOEfy6P1n7lNlhFGZf1+mcesbLEdlgnX0UC0t2reeOUEcqhb1TIfqjQWl+wWujomM+os8v8CHQGNulHVg==}
 
-  '@eni-chain/app-sdk-core@0.1.3':
-    resolution: {integrity: sha512-SbzHR5RxH7CueoQt9ZKi58dvvfvKiuHXMKKojs2PDhjBsnprK1SEdAhztlLv/fUe7bg7rJY78z5wTgi9ueXskw==}
+  '@eni-chain/app-sdk-core@0.1.4':
+    resolution: {integrity: sha512-hqhu6Igln6fdsQU2jlTbrCE9THwpq1CQ6xWOMayLSC6UZZEFnrwnv8gJJYzLyUPBryL7/W+sM6bELQB/+5+Ctw==}
 
-  '@eni-chain/app-sdk-gas-exchange@0.1.3':
-    resolution: {integrity: sha512-ZP1ubXtTET88U6c8lDLkA8pxNIrm6sGKmb9vui0yizjXMIF/kLGh01QUKnEMXJzAE6dPycwXuQ+q9noqZLHENg==}
+  '@eni-chain/app-sdk-gas-exchange@0.1.4':
+    resolution: {integrity: sha512-p2Dlt/GgZcFbdcsTppb39w5fSF1Ykc0ObZXU0Bfa1qwwSiKmaSGE+8sqnTIoYRb0hvGZrK+zp5FP7sh0lGMQ2g==}
 
-  '@eni-chain/app-sdk-react@0.1.3':
-    resolution: {integrity: sha512-TRQ6gLI6q7kLEdVJ3EgQ1QP66ZFxkzk1d8NwupZ1NwozkNfeg6XYwvLnKCby+Ny0GK+Xth9nxaMRS+7tPAdFqg==}
+  '@eni-chain/app-sdk-react@0.1.4':
+    resolution: {integrity: sha512-pOIScBudrh+HTGcq+UEcEhLbsTClREbH3osVFsY54IdJ6W0VW5fRJ9GGQpMKtxWZSvSIvJewQZl+Tr82zemelw==}
     peerDependencies:
       react: '>=18'
 
-  '@eni-chain/app-sdk-swap@0.1.3':
-    resolution: {integrity: sha512-WbvFT1DLMWi3bniOMp+0LNGCe/v+JphaQqI5UD4NCLYr7o51JGjE5MH0caMBOP6mztJsGnR9bCt1hEDfzfxCww==}
+  '@eni-chain/app-sdk-swap@0.1.4':
+    resolution: {integrity: sha512-FL8YADosf5jwwv+HMsK5R9CqEXmcjfS+IZFIDxwEOz6pMNLWM+ZiV7dXMA2ITiKKs4ORqdopfYKJ5cIELqQ0fA==}
 
-  '@eni-chain/app-sdk-vue@0.1.3':
-    resolution: {integrity: sha512-DfImtyxI85oYR02SZfrMdI5Ym3b5Xjrb74JlW0KGCS1ttwTx/MCLp7vGLC+WNnK8SuRNCYhAXDQ8Dz271BKxuw==}
+  '@eni-chain/app-sdk-vue@0.1.4':
+    resolution: {integrity: sha512-OKNKPA9JaJQSAluXKwDT18zN+VANFRYZNKupl0uZJyp58ravgl+b4qd7Nnsd+e2Lt80HgstfEn4LdrZTaxguPg==}
     peerDependencies:
       vue: '>=3'
 
-  '@eni-chain/app-sdk-wallet-adapters@0.1.3':
-    resolution: {integrity: sha512-HL3Id4qcE6XUEtbaYNMEIBRDdwh40j6XaUh0tDKGD9tGfFJ/pjun8P6saaM6Q5hOuK2BSKBxtUDiOasnBelq/g==}
+  '@eni-chain/app-sdk-wallet-adapters@0.1.4':
+    resolution: {integrity: sha512-6yqfyU5CT3O5RHO7xjelkf9IlVTL1FEFXG5SrZEgkAtC3kBaRDq2m98PF+mhQ++FW4LYZf8v6HtfLDxRGP03qg==}
     peerDependencies:
       viem: ^2.0.0
 
-  '@eni-chain/app-sdk-widgets-core@0.1.3':
-    resolution: {integrity: sha512-5rQQpdM+Euwy3pl8WK8G4JRJ3Vl53/L8hLSfwE7C4L0mmZ1hyw/DdKSta46KX/7EOx5HErbmLe7gDHXoOuBnZw==}
+  '@eni-chain/app-sdk-widgets-core@0.1.4':
+    resolution: {integrity: sha512-fql5LR+P4QPzAqyUZ8uEj27h86eyIuoENtItApBqcCX2pRxno0iuFwo7khQELJwxQs39Y3cY82fviFYRGCbe4Q==}
 
-  '@eni-chain/app-sdk-widgets-react@0.1.3':
-    resolution: {integrity: sha512-So3HVY1hByp/MaFfB6+OrjnvpspNZ7vZSN/Q6aXii4qmQAb80ghj81+EKHvXJ+XSmiv468NLhLgjcT4tdT/RyQ==}
+  '@eni-chain/app-sdk-widgets-react@0.1.4':
+    resolution: {integrity: sha512-Qz138lH+n6LVmVPP/XLXOjUuPRoTfZhj6HhgWwnypBmOagy7FQHPD5qlTVKvrsoYrL2sKakakNPxMvnJh/35dw==}
     peerDependencies:
       react: '>=18'
 
-  '@eni-chain/app-sdk-widgets-vue@0.1.3':
-    resolution: {integrity: sha512-jAOHmRpRfZSpNpzTyOh+MsuplVNISP5c8b8+W9KaPcU1D0Fz4zRmgJEgCtJPD4wBYqeuwAD2Cuf/EnzMqGMr7g==}
+  '@eni-chain/app-sdk-widgets-vue@0.1.4':
+    resolution: {integrity: sha512-K+GIzlF4knOQL2XqFwXzNApUCsrcmwjtT1pUgINuF0o1vwJkGAxTSTNaiGY1fTRFigkAN6ek4izjLccpoaN8fw==}
     peerDependencies:
       vue: '>=3'
 
-  '@eni-chain/app-sdk@0.1.3':
-    resolution: {integrity: sha512-f/zHlStWvG7P53SrPLavRJmSmexGLQahZ5lHyky5KvNC/eTCkZEFTOZC+SXWEwO8WqWPDY5//AbRGCSrsHQN8A==}
+  '@eni-chain/app-sdk@0.1.4':
+    resolution: {integrity: sha512-h38l2QyVkiqxSVpPsbN+YbmECQ3KHWylf7+3oVz6pY0DtM4d1ceiBuSg9fRHqUBE0S3Ft908jMn6+DZC7tlmXA==}
 
   '@esbuild/aix-ppc64@0.25.12':
     resolution: {integrity: sha512-Hhmwd6CInZ3dwpuGTF8fJG6yoWmsToE+vYgD4nytZVxcu1ulHpUQRAB1UJ8+N1Am3Mz4+xOByoQoSZf4D+CpkA==}
@@ -1343,19 +1343,19 @@ snapshots:
       '@babel/helper-string-parser': 7.29.7
       '@babel/helper-validator-identifier': 7.29.7
 
-  '@eni-chain/app-sdk-bridge@0.1.3(viem@2.52.2(typescript@5.9.3))':
+  '@eni-chain/app-sdk-bridge@0.1.4(viem@2.52.2(typescript@5.9.3))':
     dependencies:
-      '@eni-chain/app-sdk-core': 0.1.3
-      '@eni-chain/app-sdk-wallet-adapters': 0.1.3(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk-core': 0.1.4
+      '@eni-chain/app-sdk-wallet-adapters': 0.1.4(viem@2.52.2(typescript@5.9.3))
     transitivePeerDependencies:
       - viem
 
-  '@eni-chain/app-sdk-core@0.1.3': {}
+  '@eni-chain/app-sdk-core@0.1.4': {}
 
-  '@eni-chain/app-sdk-gas-exchange@0.1.3(typescript@5.9.3)':
+  '@eni-chain/app-sdk-gas-exchange@0.1.4(typescript@5.9.3)':
     dependencies:
-      '@eni-chain/app-sdk-core': 0.1.3
-      '@eni-chain/app-sdk-wallet-adapters': 0.1.3(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk-core': 0.1.4
+      '@eni-chain/app-sdk-wallet-adapters': 0.1.4(viem@2.52.2(typescript@5.9.3))
       viem: 2.52.2(typescript@5.9.3)
     transitivePeerDependencies:
       - bufferutil
@@ -1363,9 +1363,9 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@eni-chain/app-sdk-react@0.1.3(react@18.3.1)(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))':
+  '@eni-chain/app-sdk-react@0.1.4(react@18.3.1)(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))':
     dependencies:
-      '@eni-chain/app-sdk': 0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk': 0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
       react: 18.3.1
     transitivePeerDependencies:
       - bufferutil
@@ -1374,10 +1374,10 @@ snapshots:
       - viem
       - zod
 
-  '@eni-chain/app-sdk-swap@0.1.3(typescript@5.9.3)':
+  '@eni-chain/app-sdk-swap@0.1.4(typescript@5.9.3)':
     dependencies:
-      '@eni-chain/app-sdk-core': 0.1.3
-      '@eni-chain/app-sdk-wallet-adapters': 0.1.3(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk-core': 0.1.4
+      '@eni-chain/app-sdk-wallet-adapters': 0.1.4(viem@2.52.2(typescript@5.9.3))
       viem: 2.52.2(typescript@5.9.3)
     transitivePeerDependencies:
       - bufferutil
@@ -1385,9 +1385,9 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@eni-chain/app-sdk-vue@0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))(vue@3.5.35(typescript@5.9.3))':
+  '@eni-chain/app-sdk-vue@0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))(vue@3.5.35(typescript@5.9.3))':
     dependencies:
-      '@eni-chain/app-sdk': 0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk': 0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
       vue: 3.5.35(typescript@5.9.3)
     transitivePeerDependencies:
       - bufferutil
@@ -1396,14 +1396,14 @@ snapshots:
       - viem
       - zod
 
-  '@eni-chain/app-sdk-wallet-adapters@0.1.3(viem@2.52.2(typescript@5.9.3))':
+  '@eni-chain/app-sdk-wallet-adapters@0.1.4(viem@2.52.2(typescript@5.9.3))':
     dependencies:
-      '@eni-chain/app-sdk-core': 0.1.3
+      '@eni-chain/app-sdk-core': 0.1.4
       viem: 2.52.2(typescript@5.9.3)
 
-  '@eni-chain/app-sdk-widgets-core@0.1.3(typescript@5.9.3)':
+  '@eni-chain/app-sdk-widgets-core@0.1.4(typescript@5.9.3)':
     dependencies:
-      '@eni-chain/app-sdk': 0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk': 0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
       viem: 2.52.2(typescript@5.9.3)
     transitivePeerDependencies:
       - bufferutil
@@ -1411,11 +1411,11 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@eni-chain/app-sdk-widgets-react@0.1.3(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)':
+  '@eni-chain/app-sdk-widgets-react@0.1.4(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.9.3)':
     dependencies:
-      '@eni-chain/app-sdk': 0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
-      '@eni-chain/app-sdk-react': 0.1.3(react@18.3.1)(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
-      '@eni-chain/app-sdk-widgets-core': 0.1.3(typescript@5.9.3)
+      '@eni-chain/app-sdk': 0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk-react': 0.1.4(react@18.3.1)(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk-widgets-core': 0.1.4(typescript@5.9.3)
       '@radix-ui/react-select': 2.3.0(@types/react-dom@18.3.7(@types/react@18.3.31))(@types/react@18.3.31)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       react: 18.3.1
       viem: 2.52.2(typescript@5.9.3)
@@ -1428,11 +1428,11 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@eni-chain/app-sdk-widgets-vue@0.1.3(typescript@5.9.3)(vue@3.5.35(typescript@5.9.3))':
+  '@eni-chain/app-sdk-widgets-vue@0.1.4(typescript@5.9.3)(vue@3.5.35(typescript@5.9.3))':
     dependencies:
-      '@eni-chain/app-sdk': 0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
-      '@eni-chain/app-sdk-vue': 0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))(vue@3.5.35(typescript@5.9.3))
-      '@eni-chain/app-sdk-widgets-core': 0.1.3(typescript@5.9.3)
+      '@eni-chain/app-sdk': 0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk-vue': 0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))(vue@3.5.35(typescript@5.9.3))
+      '@eni-chain/app-sdk-widgets-core': 0.1.4(typescript@5.9.3)
       viem: 2.52.2(typescript@5.9.3)
       vue: 3.5.35(typescript@5.9.3)
     transitivePeerDependencies:
@@ -1441,13 +1441,13 @@ snapshots:
       - utf-8-validate
       - zod
 
-  '@eni-chain/app-sdk@0.1.3(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))':
+  '@eni-chain/app-sdk@0.1.4(typescript@5.9.3)(viem@2.52.2(typescript@5.9.3))':
     dependencies:
-      '@eni-chain/app-sdk-bridge': 0.1.3(viem@2.52.2(typescript@5.9.3))
-      '@eni-chain/app-sdk-core': 0.1.3
-      '@eni-chain/app-sdk-gas-exchange': 0.1.3(typescript@5.9.3)
-      '@eni-chain/app-sdk-swap': 0.1.3(typescript@5.9.3)
-      '@eni-chain/app-sdk-wallet-adapters': 0.1.3(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk-bridge': 0.1.4(viem@2.52.2(typescript@5.9.3))
+      '@eni-chain/app-sdk-core': 0.1.4
+      '@eni-chain/app-sdk-gas-exchange': 0.1.4(typescript@5.9.3)
+      '@eni-chain/app-sdk-swap': 0.1.4(typescript@5.9.3)
+      '@eni-chain/app-sdk-wallet-adapters': 0.1.4(viem@2.52.2(typescript@5.9.3))
     transitivePeerDependencies:
       - bufferutil
       - typescript

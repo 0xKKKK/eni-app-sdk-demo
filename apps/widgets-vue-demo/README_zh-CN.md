@@ -2,7 +2,7 @@
 
 [English](./README.md) | [返回根文档](../../README_zh-CN.md)
 
-这个应用演示如何在 Vue 3 项目中使用 `@eni-chain/app-sdk-widgets-vue`。示例包含实时预览、可配置模块，以及根据当前配置生成的源码片段。
+这个应用演示如何在 Vue 3 项目中使用 `@eni-chain/app-sdk-widgets-vue`。示例包含实时预览、可配置模块、Gas 代付默认值，以及根据当前配置生成的源码片段。
 
 ## 在线示例
 
@@ -99,6 +99,8 @@ const eni = computed(() => {
         gas: {
           enabled: true,
           defaultAmount: "",
+          defaultDirection: "usdt-to-egas",
+          defaultGasless: false,
         },
         trade: {
           enabled: true,
@@ -169,6 +171,30 @@ defineProps<{
 </template>
 ```
 
+### 只引入 Gas Exchange
+
+```vue
+<script setup lang="ts">
+import { EniProvider, GasExchangeWidget } from "@eni-chain/app-sdk-widgets-vue";
+import "@eni-chain/app-sdk-widgets-vue/styles.css";
+
+defineProps<{
+  eni: any;
+  wallet: any;
+}>();
+</script>
+
+<template>
+  <EniProvider :sdk="eni" :wallet="wallet">
+    <GasExchangeWidget
+      default-amount=""
+      default-direction="usdt-to-egas"
+      :default-gasless="false"
+    />
+  </EniProvider>
+</template>
+```
+
 ### 只引入 Swap
 
 ```vue
@@ -210,6 +236,7 @@ const swapPath = [fromToken.address, toToken.address] as const;
 - `language`：可设置为 `"auto"`、`"english"` 或 `"chinese"`。
 - `widgets.theme`：配置 `mode`、`primaryColor`、`background`、`radius`。
 - `widgets.ui.defaultModule`：可设置为 `"bridge"`、`"gas"`、`"trade"` 或 `"tools"`。
+- `widgets.modules.gas.defaultGasless`：默认开启 ENI-Peg USDT -> EGAS 的 Gas 代付。relay 会支付链上 gas，并在交易完成后从到账 EGAS 中扣除 `1 EGAS`。
 - `widgets.modules.trade`：对应 Swap 模块。完整 SDK 配置里 key 是 `trade`，独立组件名是 `SwapWidget`。
 - `defaultSlippageBps` 和 `defaultTaxBps` 的分母都是 `10000`。挂件会展示两者相加后的最终滑点容忍度。`defaultTaxBps` 不为 `0` 时用于 exact-in 的 ERC20-to-ERC20 带税交易。
 - `EniWidgets` 也支持 `showBridge`、`showGasExchange`、`showSwap`、`showTools`、`defaultMode` 等直接控制完整挂件 shell 的 props。

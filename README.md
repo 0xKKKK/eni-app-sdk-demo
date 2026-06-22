@@ -18,12 +18,12 @@ Choose one of the following integration paths based on how much UI and SDK abstr
 
 ## What the Demos Cover
 
-- Raw bridge API quote and history calls, plus gas exchange transaction construction.
+- Raw bridge API quote and history calls, plus gas exchange transaction and gas sponsorship payload construction.
 - Initializing `EniSDK` with an EIP-1193 wallet adapter.
-- Calling the SDK directly to resolve bridge routes, request quotes, execute cross-chain transactions, and prepare or execute gas exchange plans.
+- Calling the SDK directly to resolve bridge routes, request quotes, execute cross-chain transactions, and prepare or execute gas exchange plans, including `executionMode: "gasless"` for ENI-Peg USDT -> EGAS.
 - Rendering the full ENI widget experience with `EniProvider` and `EniWidgets`.
 - Enabling or disabling Bridge, Gas, Swap, and Tools modules.
-- Customizing language, theme, toolbar visibility, default module, token presets, slippage, swap tax, and quick links.
+- Customizing language, theme, toolbar visibility, default module, token presets, gas sponsorship defaults, slippage, swap tax, and quick links.
 - Rendering standalone module widgets when a host app only needs Bridge, Swap, Gas, or Tools.
 
 ## Workspace Setup
